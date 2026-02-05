@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sang Dermawan | Cyber Store V2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        /* ==================== CSS RESET & CORE ==================== */
+        :root { --main: #6c5ce7; --acc: #00cec9; --bg: #0f1014; --card: #1e2029; --font: 'Rajdhani', sans-serif; --font-head: 'Orbitron', sans-serif; }
+        * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+        body { background:var(--bg); color:#fff; font-family:var(--font); padding-bottom:80px; overflow-x: hidden; }
+        
+        /* ==================== Z-INDEX LAYERS (PENTING!) ==================== */
+        /* Header: 100 | Sidebar: 2000 | Overlay: 1999 | Modal: 3000 */
+
+        /* ==================== HEADER ==================== */
+        header { height:60px; background:rgba(15,16,20,0.95); display:flex; justify-content:space-between; align-items:center; padding:0 15px; position:sticky; top:0; z-index:100; border-bottom:1px solid #333; backdrop-filter: blur(5px); }
+        .head-left { display:flex; align-items:center; gap:10px; }
+        .menu-btn { background:none; border:none; color:#fff; font-size:1.4rem; cursor:pointer; padding:5px; z-index: 101; }
+        .logo { width:35px; height:35px; border-radius:50%; border:2px solid var(--acc); overflow:hidden; }
+        .logo img { width:100%; height:100%; object-fit:cover; }
+        .title h1 { font-family: var(--font-head); font-size:0.9rem; margin:0; letter-spacing: 1px; }
+        .title p { font-size:0.6rem; color:var(--acc); margin:0; }
+        
+        .head-right { display:flex; align-items:center; gap:10px; }        /* ==================== WALLET INFO STYLE ==================== */
+        .wallet-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Bagi 2 Kolom */
+            gap: 12px;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .wallet-item {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            transition: transform 0.2s;
+        }
+        .wallet-item:active { transform: scale(0.95); }
+
+        /* Styling Khusus Saldo (Biru) */
+        .wallet-item.saldo { border-bottom: 2px solid var(--acc); }
+        .wallet-item.saldo .icon-box { color: var(--acc); text-shadow: 0 0 10px var(--acc); }
+        .wallet-item.saldo h4 { color: #fff; }
+
+        /* Styling Khusus Token (Kuning) */
+        .wallet-item.token { border-bottom: 2px solid #f1c40f; }
+        .wallet-item.token .icon-box { color: #f1c40f; text-shadow: 0 0 10px #f1c40f; }
+        .wallet-item.token h4 { color: #f1c40f; }
+
+        .icon-box { font-size: 1.5rem; margin-bottom: 5px; }
+        
+        .info-box { text-align: center; }
+        .info-box .label { 
+            font-size: 0.6rem; 
+            color: #aaa; 
+            letter-spacing: 1px; 
+            display: block; 
+            margin-bottom: 2px;
+        }
+        .info-box h4 { 
+            font-size: 1rem; 
+            margin: 0; 
+            font-family: var(--font-head);
+        }
+
+       
+
+        /* ==================== NAVIGATION ==================== */
+        .bottom-nav { position:fixed; bottom:0; width:100%; background:var(--card); display:flex; justify-content:space-around; padding:10px 0 15px; border-top:1px solid #333; z-index:90; }
+        .nav-btn { background:none; border:none; color:#888; font-size:0.7rem; display:flex; flex-direction:column; align-items:center; cursor: pointer; }
+        .nav-btn.active { color:var(--acc); transform: translateY(-2px); transition: 0.3s; }
+        .nav-btn i { font-size:1.2rem; margin-bottom:2px; }
+
+        /* ==================== SIDEBAR (FIXED) ==================== */
+        #sidebar { position:fixed; top:0; left:-100%; width:280px; height:100%; background:var(--card); z-index:2000; transition:0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow:2px 0 20px #000; display:flex; flex-direction:column; }
+        #sidebar.active { left:0; }
+        
+        #sidebar-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1999; display:none; backdrop-filter:blur(3px); }
+        #sidebar-overlay.active { display:block; }
+        
+        .sidebar-header { padding:20px; border-bottom:1px solid #333; display:flex; justify-content:space-between; align-items:center; background: rgba(0,0,0,0.2); }
+        .sidebar-content { padding:20px; flex:1; overflow-y:auto; }
+        .sb-label { color:#666; font-size:0.7rem; font-weight:bold; margin-bottom:10px; letter-spacing:1px; }
+        
+        /* ==================== MODALS (LOGIN/TUTORIAL) ==================== */
+        .auth-overlay { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:3000; display:none; justify-content:center; align-items:center; backdrop-filter:blur(5px); }
+        .auth-overlay.active { display:flex; }
+        
+        .auth-box { background:var(--card); padding:25px; width:85%; max-width:350px; border-radius:15px; border:1px solid var(--acc); position:relative; text-align:center; animation:pop 0.3s; box-shadow: 0 0 20px rgba(0, 206, 201, 0.2); }
+        @keyframes pop { from{transform:scale(0.8); opacity:0;} to{transform:scale(1); opacity:1;} }
+        
+        .input-group { position:relative; margin-bottom:15px; }
+        .input-group i { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#888; }
+        .input-group input { width:100%; background:rgba(0,0,0,0.3); border:1px solid #333; padding:12px 12px 12px 35px; color:#fff; border-radius:8px; outline:none; }
+        .input-group input:focus { border-color: var(--acc); }
+
+        /* ==================== COMPONENTS ==================== */
+        .cyber-btn { background:linear-gradient(135deg, var(--main), #4834d4); color:#fff; border:none; padding:12px; border-radius:8px; font-weight:bold; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:8px; width: auto; font-family: var(--font-head); letter-spacing: 1px; transition: 0.2s; }
+        .cyber-btn:active { transform: scale(0.98); }
+        .full-width { width:100%; }
+        .glow { background:linear-gradient(135deg, var(--acc), #0984e3); box-shadow:0 0 10px rgba(0,206,201,0.3); }
+        .gold-btn { background:#f1c40f; color:#000; }
+        .whatsapp-btn { background: #25D366; }
+        
+        /* ==================== PAGES ==================== */
+        main { max-width:600px; margin:0 auto; padding:15px; }
+        .page { display:none; animation:fadeUp 0.3s; }
+        .page.active { display:block; }
+        @keyframes fadeUp { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+        /* SHOP CARD */
+        .product-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .product { background:linear-gradient(145deg, #1e2029, #16181e); padding:15px; border-radius:10px; border:1px solid rgba(255,255,255,0.05); text-align:center; position:relative; }
+        .product img { width:60px; height:60px; object-fit:contain; margin-bottom:10px; }
+        .product h3 { font-size:0.8rem; margin-bottom:5px; height: 35px; overflow: hidden; }
+        .hot-badge { position:absolute; top:0; left:0; background:#d63031; color:#fff; padding:2px 8px; font-size:0.6rem; border-radius:10px 0 10px 0; }
+        .prod-sep { grid-column:1/-1; text-align:center; font-size:0.8rem; color:#666; margin:15px 0; letter-spacing:2px; font-weight: bold; border-top: 1px dashed #333; padding-top: 10px; }
+
+        /* INVOICE & PAYMENT */
+        .invoice { background:#fff; color:#000; padding:15px; border-radius:10px; border-top:5px solid var(--acc); margin-bottom:20px; font-family:monospace; position: relative; }
+        .invoice::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 100%; height: 10px; background: radial-gradient(circle, transparent 50%, #0f1014 50%); background-size: 10px 10px; }
+        .inv-head { display:flex; justify-content:space-between; border-bottom:2px dashed #333; padding-bottom:10px; margin-bottom:10px; font-weight:bold; }
+        .row { display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.9rem; }
+        .row.big { font-weight:bold; font-size:1.2rem; margin-top:10px; border-top:1px solid #ddd; padding-top:5px; }
+        
+        .payment-box { background: #16181e; padding: 15px; border-radius: 12px; border: 1px solid #333; }
+        .method { display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px; margin-bottom:8px; }
+        .inp-curr { position: relative; margin-bottom: 10px; }
+        .inp-curr span { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; color: var(--acc); }
+        .inp-curr input { padding-left: 45px; font-size: 1.2rem; font-weight: bold; }
+
+        /* ==================== CSS SPIN FIX ==================== */
+        .gacha-container {
+            background: linear-gradient(160deg, #1e2029, #0f1014);
+            padding: 30px 10px;
+            border-radius: 20px;
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+        
+        .wheel-wrapper {
+            width: 260px;
+            height: 260px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 50%;
+            border: 5px solid #333;
+            box-shadow: 0 0 15px rgba(0, 206, 201, 0.2);
+        }
+
+        .wheel {
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            position: relative;
+            transition: transform 4s cubic-bezier(0.15, 0, 0.15, 1);
+        }
+
+        /* Pointer Putih di Tengah Atas */
+        .wheel-pointer {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            width: 0; height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-top: 30px solid #fff;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
+        }
+
+        /* PENGATURAN TEKS DALAM RODA (PENTING BIAR GAK HILANG) */
+        .wheel-text {
+            position: absolute;
+            top: 0; left: 50%;
+            width: 50%; height: 50%;
+            transform-origin: 0% 100%; /* Titik putar di tengah roda */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-left: 20px;
+        }
+
+        .wheel-in {
+            color: #fff;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-align: center;
+            transform: rotate(90deg); /* Text Tegak */
+            text-shadow: 1px 1px 2px #000;
+        }
+
+  
+
+        /* PROFILE */
+        .prof-card { background: linear-gradient(160deg, #1e2029, #0f1014); padding: 25px; border-radius: 20px; text-align: center; border: 1px solid rgba(0,206,201,0.2); margin-bottom: 20px; }
+        .        /* UPDATE STYLE AVATAR */
+        .avt { 
+            width: 80px; height: 80px; 
+            margin: 0 auto 15px; 
+            border-radius: 50%; 
+            border: 2px solid var(--acc); 
+            box-shadow: 0 0 15px rgba(0,206,201,0.3);
+            background: #000;
+        }
+        .avt:hover #edit-overlay { display: block !important; }
+
+        
+        /* ==================== SLIDER (16:9 FIX) ==================== */
+.hero-slider-container { 
+    width: 100%; 
+    aspect-ratio: 16/9; /* KUNCI: Memaksa rasio 16 banding 9 */
+    border-radius: 12px; 
+    overflow: hidden; 
+    position: relative; 
+    margin-bottom: 20px; 
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5); /* Tambah bayangan biar keren */
+}
+
+.slider-wrapper { 
+    display: flex; 
+    transition: transform 0.5s ease-in-out; /* Animasi geser lebih halus */
+    height: 100%; 
+}
+
+.slide { 
+    min-width: 100%; 
+    height: 100%; 
+}
+
+.slide img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; /* GAMBAR FULL: Tidak gepeng, tapi crop dikit kalau gambar asli beda ukuran */
+    object-position: center; /* Fokus gambar di tengah */
+}
+        /* ==================== LIVE CHAT PRO ==================== */
+        .comments-section { 
+            background: linear-gradient(to bottom, rgba(30,32,41,0), rgba(20,22,28,0.95));
+            border: 1px solid rgba(0, 206, 201, 0.2);
+            padding: 20px; 
+            border-radius: 16px; 
+            margin-top: 25px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .comments-header { 
+            display:flex; justify-content:space-between; align-items:center;
+            border-bottom:1px solid rgba(255,255,255,0.1); 
+            padding-bottom:15px; margin-bottom:15px; 
+        }
+        .comments-header h3 { font-family: var(--font-head); font-size: 0.9rem; margin:0; display:flex; align-items:center; gap:8px; }
+        
+        .live-badge {
+            background: #d63031; color: #fff; padding: 2px 6px; border-radius: 4px;
+            font-size: 0.6rem; font-weight: bold; animation: blink 1.5s infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
+
+        .comments-list { 
+            height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:12px; padding-right:5px;
+        }
+        /* Scrollbar Tipis */
+        .comments-list::-webkit-scrollbar { width: 4px; }
+        .comments-list::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+        .chat-item { display:flex; gap:12px; align-items:flex-start; animation: slideIn 0.3s ease; }
+        .chat-item.me { flex-direction:row-reverse; }
+        @keyframes slideIn { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+
+        .avt img { width:35px; height:35px; border-radius:50%; border:2px solid rgba(255,255,255,0.1); }
+        
+        .chat-content { 
+            background:rgba(255,255,255,0.05); padding:10px 14px; 
+            border-radius:0 12px 12px 12px; font-size:0.85rem; color:#ddd; 
+            border:1px solid rgba(255,255,255,0.02); max-width:85%;
+        }
+        .chat-item.me .chat-content { 
+            background:rgba(0, 206, 201, 0.15); border-color:rgba(0, 206, 201, 0.3);
+            border-radius:12px 0 12px 12px; text-align:right;
+        }
+        .chat-name { display:block; font-size:0.7rem; font-weight:700; color:var(--acc); margin-bottom:4px; font-family:var(--font-head); }
+
+        .comment-input-area { 
+            display:flex; gap:10px; margin-top:15px; background:rgba(0,0,0,0.3); 
+            padding:5px; border-radius:50px; border:1px solid rgba(255,255,255,0.1); 
+        }
+        .comment-input-area input { 
+            flex:1; background:none; border:none; color:#fff; padding:10px 15px; outline:none; 
+        }
+        .comment-input-area button { 
+            background:var(--acc); color:#000; border:none; width:40px; height:40px; 
+            border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center;
+        }
+        /* ==================== AUTO RESIZE (FIX KEGEDEAN) ==================== */
+        
+        /* 1. Reset Ukuran Font Global (Biar muat di HP Kecil) */
+        html { font-size: 14px; } 
+
+        /* 2. Header & Nav Lebih Ramping */
+        header { height: 55px; padding: 0 10px; }
+        .logo { width: 30px; height: 30px; }
+        .title h1 { font-size: 0.8rem; }
+        .bottom-nav { padding: 8px 0 10px; }
+        .nav-btn i { font-size: 1.1rem; margin-bottom: 2px; }
+        .nav-btn { font-size: 0.65rem; }
+
+        /* 3. Slider & Konten Utama */
+        main { padding: 10px; padding-bottom: 70px; } /* Kurangi jarak pinggir */
+        .hero-slider-container { margin-bottom: 15px; border-radius: 8px; }
+        
+        /* 4. Chat Box Lebih Compact */
+        .comments-section { 
+            padding: 12px; /* Kurangi padding dalam */
+            margin-top: 15px; 
+        }
+        .comments-list { 
+            height: 220px !important; /* Paksa tinggi chat berkurang */
+        }
+        .chat-content { 
+            font-size: 0.75rem; /* Font chat lebih kecil */
+            padding: 8px 12px;
+        }
+        .avt img { width: 30px; height: 30px; } /* Avatar lebih kecil */
+
+        /* 5. Produk Grid Lebih Rapi */
+        .product-grid { gap: 8px; } /* Jarak antar produk dirapatkan */
+        .product { padding: 10px; } 
+        .product img { width: 50px; height: 50px; } /* Icon produk dikecilkan */
+        .product h3 { font-size: 0.7rem; height: 30px; }
+        .product p { font-size: 0.8rem; margin-bottom: 5px; }
+        
+        /* 6. Tombol-tombol */
+        .cyber-btn { 
+            padding: 10px; /* Tombol lebih tipis */
+            font-size: 0.8rem; 
+        }
+        
+        /* 7. Profil & Wallet */
+        .prof-card { padding: 15px; }
+        .avt { width: 60px; height: 60px; font-size: 2.5rem; }
+        .chip { padding: 2px 6px; font-size: 0.65rem; min-width: 70px; }
+
+/* ==================== FIX TAMPILAN RODA ==================== */
+.wheel-text { 
+    position: absolute; 
+    top: 0; 
+    left: 50%;          /* Mulai dari tengah horizontal */
+    width: 50%;         /* Lebar setengah lingkaran */
+    height: 50%;        /* Tinggi setengah lingkaran */
+    transform-origin: 0% 100%; /* TITIK PUTAR DI TENGAH RODA (WAJIB) */
+    display: flex;
+    align-items: center; 
+    justify-content: center;
+    padding-left: 30px; /* Jarak teks dari pusat roda */
+}
+
+.wheel-in { 
+    color: #fff; 
+    font-size: 0.75rem; 
+    font-weight: bold; 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8); 
+    text-align: center;
+    transform: rotate(90deg); /* Putar teks biar lurus */
+}
+
+        /* ==================== PROMO POPUP STYLE ==================== */
+        .ad-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); /* Background Gelap Pekat */
+            z-index: 10000; /* Paling Depan */
+            display: flex; align-items: center; justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .ad-box {
+            background: #1e2029;
+            width: 90%; max-width: 350px;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid var(--acc);
+            box-shadow: 0 0 30px rgba(0, 206, 201, 0.2);
+            animation: zoomIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        .ad-close {
+            position: absolute; top: 10px; right: 10px;
+            background: rgba(0,0,0,0.5); color: #fff;
+            border: none; width: 30px; height: 30px;
+            border-radius: 50%; font-size: 1.2rem; cursor: pointer;
+            z-index: 10;
+        }
+        .ad-close:hover { background: #d63031; }
+
+        .ad-image-wrapper {
+            width: 100%; height: 200px; /* Tinggi Gambar */
+            background: #000;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        
+        .ad-image-wrapper img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        @keyframes zoomIn { from{transform:scale(0.5); opacity:0;} to{transform:scale(1); opacity:1;} }
+
+
+    </style>
+</head>
+<body>
+
+    <audio id="bg-music" loop><source src="assets/music.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-click"><source src="assets/click.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-spin"><source src="assets/spin.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-win"><source src="assets/win.mp3" type="audio/mpeg"></audio>
+
+    <div id="tutorial-overlay" class="auth-overlay">
+        <div class="auth-box">
+            <h2 style="color:var(--acc); font-family:var(--font-head);">WELCOME AGENT!</h2>
+            <p id="tut-desc" style="margin:15px 0;">Selamat datang di Sistem Sang Dermawan V2.0.</p>
+            <button onclick="nextTutorial()" class="cyber-btn full-width glow" id="tut-btn-next">MULAI</button>
+            <button onclick="endTutorial()" style="margin-top:10px; background:none; border:none; color:#666;">LEWATI</button>
+        </div>
+    </div>
+
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-box">
+            <button onclick="closeAuthModal()" style="position:absolute; top:10px; right:15px; background:none; border:none; color:#fff; font-size:1.5rem;">&times;</button>
+            <h2>LOGIN SYSTEM</h2>
+            
+            <div style="display:flex; margin-bottom:20px; border-bottom:1px solid #333;">
+                <button onclick="switchAuth('login')" id="tab-login" style="flex:1; padding:10px; background:none; border:none; color:var(--acc); border-bottom:2px solid var(--acc);">LOGIN</button>
+                <button onclick="switchAuth('register')" id="tab-register" style="flex:1; padding:10px; background:none; border:none; color:#666;">DAFTAR</button>
+            </div>
+            
+            <form onsubmit="handleAuth(event)">
+                <div class="input-group" id="field-user"><i class="fas fa-user"></i><input type="text" id="username" placeholder="Username" required></div>
+                <div class="input-group" id="field-pass"><i class="fas fa-lock"></i><input type="password" id="password" placeholder="Password"></div>
+                <div class="input-group" id="field-token" style="display:none;"><i class="fas fa-key"></i><input type="text" id="token-input" placeholder="Token Admin"></div>
+                <div class="input-group" id="field-newpass" style="display:none;"><i class="fas fa-unlock-alt"></i><input type="password" id="new-password" placeholder="Password Baru"></div>
+                <button type="submit" class="cyber-btn full-width glow" id="auth-btn">MASUK</button>
+            </form>
+            
+            <div style="margin-top:15px; font-size:0.8rem;">
+                <a href="#" id="link-forgot" onclick="switchAuth('forgot')" style="color:#aaa;">Lupa Sandi?</a>
+                <a href="#" id="link-login" onclick="switchAuth('login')" style="display:none; color:#aaa;">Kembali Login</a>
+            </div>
+            <p id="auth-msg" style="margin-top:10px; color:#ff7675;"></p>
+        </div>
+    </div>
+
+    <div id="sidebar-overlay" onclick="toggleSidebar()"></div>    
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <h3>SYSTEM MENU</h3>
+            <button onclick="toggleSidebar()" style="background:none; border:none; color:#ff7675; font-size:1.5rem;">&times;</button>
+        </div>
+        <div class="sidebar-content">
+            <div id="sb-guest">
+                <p class="sb-label">AKSES</p>
+                <button onclick="openAuthModal('login')" class="cyber-btn full-width" style="margin-bottom:10px;">LOGIN</button>
+                <button onclick="openAuthModal('register')" class="cyber-btn full-width">DAFTAR</button>
+            </div>
+
+            <div id="sb-member" style="display:none;">
+                <p class="sb-label">MEMBER</p>
+                <button onclick="claimDailyToken()" class="cyber-btn full-width gold-btn" style="margin-bottom:10px;">
+                    <i class="fas fa-gift"></i> KLAIM TOKEN
+                </button>
+                <button onclick="logout()" class="cyber-btn full-width" style="background:#d63031;">
+                    <i class="fas fa-sign-out-alt"></i> LOGOUT
+                </button>
+            </div>
+
+            <div style="margin-top:20px; border-top:1px solid #333; padding-top:20px;">
+                <p class="sb-label">EXTRAS</p>
+                <button onclick="redeemCode()" class="cyber-btn full-width" style="margin-bottom:10px; border:1px solid #a29bfe; color:#a29bfe;">
+                    <i class="fas fa-ticket-alt"></i> REDEEM CODE
+                </button>
+            </div>
+
+            <div style="margin-top:10px; border-top:1px solid #333; padding-top:20px;">
+                <p class="sb-label">CONTACT</p>
+                <a href="https://wa.me/6283125398104" class="cyber-btn full-width whatsapp-btn" style="margin-bottom:10px;">
+                    <i class="fab fa-whatsapp"></i> WHATSAPP
+                </a>
+            </div>
+        </div>
+    </div>
+
+   
+
+    <header>
+        <div class="head-left">
+            <button onclick="toggleSidebar()" class="menu-btn"><i class="fas fa-bars"></i></button>
+            <div class="logo"><img src="assets/logo.png" alt=""></div>
+            <div class="title"><h1>SANG DERMAWAN</h1><p>CYBER STORE</p></div>
+        </div>
+        <div class="head-right">
+            <div class="wallet" onclick="showPage('topup')">
+                <div class="chip blue"><i class="fas fa-bolt"></i> <span id="user-saldo">0</span></div>
+                <div class="chip gold"><i class="fas fa-gem"></i> <span id="user-token">0</span></div>
+            </div>
+            <button onclick="toggleMusic()" id="music-btn" class="menu-btn"><i class="fas fa-play"></i></button>
+        </div>
+    </header>
+
+    <nav class="bottom-nav">
+        <button onclick="showPage('home')" class="nav-btn active"><i class="fas fa-home"></i> HOME</button>
+        <button onclick="showPage('shop')" class="nav-btn"><i class="fas fa-shopping-bag"></i> SHOP</button>
+        <button onclick="showPage('spin')" class="nav-btn"><i class="fas fa-dharmachakra"></i> SPIN</button>
+        <button onclick="showPage('topup')" class="nav-btn"><i class="fas fa-wallet"></i> TOPUP</button>
+        <button onclick="showPage('profile')" class="nav-btn"><i class="fas fa-user"></i> AKUN</button>
+    </nav>
+
+    <main>
+        
+        <section id="home" class="page active">
+            <div class="hero-slider-container">
+                <div class="slider-wrapper" id="slider-wrapper">
+                    <div class="slide"><img src="assets/slide1.jpg"></div>
+                    <div class="slide"><img src="assets/slide2.jpg"></div>
+                    <div class="slide"><img src="assets/slide3.jpg"></div>
+                </div>
+            </div>
+            <div style="text-align:center; margin-bottom:20px;">
+                <h2 style="font-family:var(--font-head);">WELCOME, <span id="disp-name" style="color:var(--acc)">GUEST</span></h2>
+                <div style="background:var(--card); padding:15px; border-radius:10px; margin-top:15px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                        <span>MISI SHARE</span>
+                        <span style="color:#f1c40f;">+50 TKN</span>
+                    </div>
+                    <div style="background:#333; height:5px; border-radius:5px; margin-bottom:10px;"><div id="share-bar" style="width:0%; height:100%; background:var(--acc);"></div></div>
+                    <button onclick="executeShareTask()" class="cyber-btn full-width">SHARE SEKARANG</button>
+                </div>
+            </div>
+                        <div class="comments-section">
+                <div class="comments-header">
+                    <h3><span class="live-badge">● LIVE</span> REALTIME TESTIMONI</h3>
+                </div>
+                <div class="comments-list" id="com-list"></div>
+                <div class="comment-input-area">
+                    <input type="text" id="com-input" placeholder="Login untuk ikut ngobrol..." autocomplete="off">
+                    <button onclick="postComment()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section id="shop" class="page">
+            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px;">BLACK MARKET</h2>
+            <div class="product-grid" id="shop-grid"></div>
+        </section>
+
+                                <section id="spin" class="page">
+            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px;">CYBER SPIN</h2>
+            
+            <div class="gacha-container" style="min-height:300px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                <i class="fas fa-rocket" style="font-size:4rem; color:var(--acc); margin-bottom:20px; filter:drop-shadow(0 0 10px var(--acc));"></i>
+                
+                <h3 style="color:#fff; font-family:var(--font-head); letter-spacing:2px;">COMING SOON</h3>
+                
+                <p style="color:#aaa; font-size:0.9rem; margin-top:10px; max-width:80%;">
+                    Fitur Spin sedang dalam perbaikan sistem untuk hadiah yang lebih besar. Tunggu update selanjutnya!
+                </p>
+                
+                <button onclick="showPage('shop')" class="cyber-btn glow" style="margin-top:25px; width:auto; padding:10px 30px;">
+                    LANJUT BELANJA
+                </button>
+            </div>
+        </section>
+
+
+
+
+        <section id="topup" class="page">
+            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px;">CASHIER</h2>
+            
+            <div id="invoice-area" style="display:none;">
+                <div class="invoice">
+                    <div class="inv-head"><h3>TAGIHAN</h3><span id="inv-no">#INV</span></div>
+                    <div class="inv-body">
+                        <div class="row"><span>Item:</span><span id="inv-item" style="font-weight:bold;">-</span></div>
+                        <div class="row"><span>Harga:</span><span id="inv-price">IDR 0</span></div>
+                        <div class="row big"><span>TOTAL:</span><span id="inv-total" style="color:var(--acc);">IDR 0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="topup-manual">
+                <div class="payment-box">
+                    <label style="color:#aaa; font-size:0.8rem;">NOMINAL DEPOSIT</label>
+                    <div class="inp-curr">
+                        <span>Rp</span>
+                        <input type="number" id="topup-amount" placeholder="0">
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-box" style="margin-top:15px;">
+                <div style="text-align:center; margin-bottom:15px;">
+                    <img src="assets/qris.jpg" style="width:150px; border-radius:10px;">
+                    <br><button onclick="downloadQRIS()" style="background:none; border:none; color:var(--acc); cursor:pointer; margin-top:5px;">Simpan QRIS</button>
+                </div>
+                
+                <div class="method"><img src="assets/dana.png" height="20"> <span id="dana">0838-9802-3362</span> <button onclick="copy('dana')"><i class="fas fa-copy"></i></button></div>
+                <div class="method"><img src="assets/seabank.png" height="20"> <span id="sea">9015 0012 6233</span> <button onclick="copy('sea')"><i class="fas fa-copy"></i></button></div>
+
+                <div style="margin-top:20px;">
+                    <button id="btn-konfirmasi" onclick="processTransaction()" class="cyber-btn full-width whatsapp-btn">KONFIRMASI BAYAR</button>
+                    <button id="btn-loading" class="cyber-btn full-width" style="display:none; opacity:0.7;">VERIFIKASI... (<span id="timer">15</span>s)</button>
+                    <button id="btn-akses" onclick="openProductLink()" class="cyber-btn full-width glow" style="display:none; margin-top:10px;">BUKA PRODUK</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="profile" class="page">
+            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px;">AGENT PROFILE</h2>
+            
+            <div class="prof-card">
+                <div class="avt" onclick="triggerUpload()" style="cursor:pointer; position:relative; overflow:hidden;">
+                    <img id="prof-img" src="https://ui-avatars.com/api/?name=Guest&background=333&color=fff" style="width:100%; height:100%; object-fit:cover;">
+                    <div id="edit-overlay" style="position:absolute; bottom:0; width:100%; background:rgba(0,0,0,0.6); font-size:0.6rem; color:#fff; display:none; text-align:center;">UBAH</div>
+                </div>
+                <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleAvatarUpload(this)">
+                
+                <h3 id="prof-name" style="margin-bottom:20px; font-size:1.3rem;">GUEST</h3>
+
+                <div class="wallet-grid">
+                    <div class="wallet-item saldo">
+                        <div class="icon-box"><i class="fas fa-wallet"></i></div>
+                        <div class="info-box">
+                            <span class="label">TOTAL SALDO</span>
+                            <h4 id="prof-saldo">IDR 0</h4>
+                        </div>
+                    </div>
+                    
+                    <div class="wallet-item token">
+                        <div class="icon-box"><i class="fas fa-bolt"></i></div>
+                        <div class="info-box">
+                            <span class="label">SISA TOKEN</span>
+                            <h4 id="prof-token">0</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="border-left:3px solid var(--acc); padding-left:10px; margin:25px 0 15px;">RIWAYAT</h3>
+            <div id="hist-list"></div>
+        </section>
+
+
+    </main>
+    <div id="promo-popup" class="ad-overlay" style="display:none;">
+        <div class="ad-box">
+            <button class="ad-close" onclick="closePromo()">&times;</button>
+            
+            <div class="ad-image-wrapper">
+                <img id="promo-img" src="" alt="Promo Spesial">
+            </div>
+            
+            <div style="padding: 15px;">
+                <h3 id="promo-title" style="color:var(--acc); font-family:var(--font-head); margin-bottom:10px;">SPESIAL OFFER</h3>
+                <p style="color:#aaa; font-size:0.8rem; margin-bottom:15px;">Dapatkan promo menarik khusus hari ini!</p>
+                
+                <a id="promo-link" href="#" target="_blank" class="cyber-btn full-width glow">
+                    <i class="fab fa-whatsapp"></i> CHAT ADMIN
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ==================== 1. DATA & CONFIG ==================== */
+        const USERS_KEY = 'cyber_users_db';
+        const GUEST_HIST_KEY = 'cyber_guest_hist';
+        const MASTER_TOKEN = 'ADMIN#RESET'; 
+
+        const sfx = {
+            click: document.getElementById("sfx-click"),
+            spin: document.getElementById("sfx-spin"),
+            win: document.getElementById("sfx-win"),
+            bgm: document.getElementById("bg-music")
+        };
+
+        let currentUser = null; 
+        let activeOrder = null; 
+        let isSpinning = false;
+
+        const products = [
+            {name:"SUPERGRUP VIP", price:50000, type:"link", link:"https://t.me/+XTHT-nfZ1c9hZDRl", isHot: true}, 
+            {name:"STW PREMIUM", price:30000, type:"link", link:"https://t.me/+HJb70Z-zEt4yNzRl"},
+            {name:"HIJAB EKSKLUSIF", price:30000, type:"link", link:"https://t.me/+5kvfGv3Qozo0NTI1"},
+            {name:"ABG INDO", price:30000, type:"link", link:"https://t.me/+Dpl0nfrJyLowYTk1"},
+            {name:"TALENT INDO", price:30000, type:"link", link:"https://t.me/+g26TeYwkMjM2ZTBl"},
+            {name:"BLOWJOB/KULUM", price:30000, type:"link", link:"https://t.me/+iukHyeiHEq1kODc1"},
+            {name:"COSPLAYERS", price:30000, type:"link", link:"https://t.me/+yK3RLPcI0xZmYTll"},
+            {name:"VIP C0LMEK", price:30000, type:"link", link:"https://t.me/+yK3RLPcI0xZmYTll"},
+            {name:"TAKE ALL VIP", price:300000, type:"link", link:"https://t.me/addlist/adamCuZd6MYwN2Y9", isHot: true},
+            {name:"BOCIL INDO (GARANSI)", price:50000, type:"resi", isHot: true}, 
+            {name:"BOCIL BARAT (GARANSI)", price:50000, type:"resi"},
+            {name:"PEDMOM (GARANSI)", price:50000, type:"resi"},
+            {name:"BOCIL CHINESE (GARANSI)", price:50000, type:"resi"},
+            {name:"BOCIL LONGDUR (GARANSI)", price:50000, type:"resi"},
+            {name:"BOCIL INDO (STD)", price:30000, type:"resi"},
+            {name:"BOCIL BARAT (STD)", price:30000, type:"resi"},
+            {name:"PEDMOM (STD)", price:30000, type:"resi"},
+            {name:"BOCIL CHINESE (STD)", price:30000, type:"resi"},
+            {name:"BOCIL LONGDUR (STD)", price:30000, type:"resi"}
+        ];
+        
+                // DATA SPIN (URUTAN & WARNA FIX)
+                function spinWheel() {
+            const COST = 10;
+            // Cek Login & Token
+            if(!currentUser) {
+                alert("Silahkan Login Member untuk Main Spin!");
+                return openAuthModal('login');
+            }
+            if(currentUser.token < COST) return alert(`Token Kurang! Butuh ${COST} Token.`);
+            if(!confirm(`Putar Spin? (-${COST} Token)`)) return;
+
+            // Potong Token
+            const db = getDB(); 
+            db[currentUser.username].token -= COST; 
+            saveDB(db); checkSession();
+
+            playSfx('spin');
+            const w = document.getElementById('wheel');
+            const res = document.getElementById('spin-res'); 
+            res.innerHTML = "MENCARI HOKI...";
+            
+            // --- CARI PEMENANG (Logic Persentase) ---
+            let totalChance = 0;
+            spinPrizes.forEach(p => totalChance += p.chance);
+            let random = Math.random() * totalChance;
+            let idx = 0;
+            for(let i = 0; i < spinPrizes.length; i++) {
+                random -= spinPrizes[i].chance;
+                if(random <= 0) { idx = i; break; }
+            }
+            
+            const win = spinPrizes[idx];
+            
+            // --- RUMUS MATEMATIKA SINKRONISASI ---
+            const sliceDeg = 360 / spinPrizes.length; // 45 derajat per potong
+            // Rumus: Putar 8x (2880 derajat) - (Posisi Index) - (Setengah Potongan)
+            // Ini memaksa jarum berhenti tepat di tengah warna
+            const targetRotation = (360 * 8) - (idx * sliceDeg) - (sliceDeg / 2);
+            
+            // Eksekusi Animasi
+            w.style.transform = `rotate(${targetRotation}deg)`;
+            isSpinning = true;
+
+            setTimeout(() => {
+                isSpinning = false;
+                w.style.transition = 'none'; 
+                // Kunci posisi visual agar tidak mental balik
+                w.style.transform = `rotate(${targetRotation % 360}deg)`;
+                
+                // --- HASIL ---
+                if(win.type === 'zonk') {
+                    res.innerHTML = `<span style="color:#ff7675; font-weight:bold;">ZONK! 🤣</span>`;
+                } else {
+                    playSfx('win'); 
+                    res.innerHTML = `<span style="color:var(--acc)">WIN: ${win.label}</span>`;
+                    
+                    if(win.type === 'grand') {
+                        if(win.label === "SUPERGRUP") {
+                            saveHistory(`JACKPOT: ${win.label}`, 0, win.val);
+                            alert(`JACKPOT!! 🎉\nLink Akses ${win.label} tersimpan di Riwayat.`);
+                        } else {
+                            alert(`JACKPOT ${win.label}! Screenshot lapor Admin.`);
+                        }
+                    } 
+                    else if(win.type === 'saldo') {
+                        db[currentUser.username].saldo += win.val;
+                        alert(`Hoki! Saldo +${win.val}`);
+                    }
+                    else if(win.type === 'token') {
+                        db[currentUser.username].token += win.val;
+                        alert(`Hoki! Token +${win.val}`);
+                    }
+                    saveDB(db); checkSession();
+                }
+                
+                // Kembalikan efek transisi untuk putaran berikutnya
+                setTimeout(() => { w.style.transition = '4s cubic-bezier(0.15,0,0.15,1)'; }, 100);
+            }, 4000);
+        }
+
+        /* ==================== 2. INIT ==================== */
+        document.addEventListener('DOMContentLoaded', () => {
+            checkSession();
+            renderShop();
+            renderWheel();
+            initSlider();
+            
+            initComments(); // <--- GANTI 'inits()' JADI INI
+            
+            if(currentUser) {
+                updateShareUI();
+                setTimeout(checkTutorial, 1500);
+            }
+        });
+
+
+        function playSfx(type) { if(sfx[type]) { sfx[type].currentTime = 0; sfx[type].play().catch(()=>{}); } }
+        function toggleMusic() { const btn = document.getElementById('music-btn'); if(sfx.bgm.paused) { sfx.bgm.play(); btn.innerHTML = '<i class="fas fa-pause"></i>'; } else { sfx.bgm.pause(); btn.innerHTML = '<i class="fas fa-play"></i>'; } }
+
+        /* ==================== 3. AUTH ==================== */
+        function getDB() { return JSON.parse(localStorage.getItem(USERS_KEY)) || {}; }
+        function saveDB(db) { localStorage.setItem(USERS_KEY, JSON.stringify(db)); }
+
+        function checkSession() {
+            const sess = sessionStorage.getItem('activeUser');
+            if(sess) {
+                const u = JSON.parse(sess);
+                const db = getDB();
+                if(db[u.username]) currentUser = {username: u.username, ...db[u.username]};
+                else currentUser = null;
+            } else currentUser = null;
+            updateUI();
+        }
+
+        function updateUI() {
+            const sbGuest = document.getElementById('sb-guest');
+            const sbMember = document.getElementById('sb-member');
+            
+            if(currentUser) {
+                document.getElementById('disp-name').innerText = currentUser.username.toUpperCase();
+                document.getElementById('prof-name').innerText = currentUser.username.toUpperCase();
+                document.getElementById('user-saldo').innerText = currentUser.saldo.toLocaleString('id-ID');
+                document.getElementById('user-token').innerText = currentUser.token;
+                document.getElementById('prof-saldo').innerText = "IDR " + currentUser.saldo.toLocaleString('id-ID');
+                document.getElementById('prof-token').innerText = currentUser.token;
+                sbMember.style.display = 'block'; sbGuest.style.display = 'none';
+            } else {
+                document.getElementById('disp-name').innerText = "GUEST";
+                document.getElementById('prof-name').innerText = "GUEST";
+                document.getElementById('user-saldo').innerText = "0";
+                document.getElementById('user-token').innerText = "0";
+                document.getElementById('prof-saldo').innerText = "IDR 0";
+                document.getElementById('prof-token').innerText = "0";
+                sbMember.style.display = 'none'; sbGuest.style.display = 'block';
+            }
+            renderHistory();
+        }
+
+        let currentAuthMode = 'login';
+        function openAuthModal(mode) { toggleSidebar(false); document.getElementById('auth-overlay').classList.add('active'); switchAuth(mode); }
+        function closeAuthModal() { document.getElementById('auth-overlay').classList.remove('active'); }
+function switchAuth(mode) {
+            playSfx('click'); currentAuthMode = mode;
+            document.getElementById('field-user').style.display = 'block';
+            document.getElementById('field-pass').style.display = (mode === 'login' || mode === 'register') ? 'block' : 'none';
+            document.getElementById('field-token').style.display = (mode === 'forgot') ? 'block' : 'none';
+            document.getElementById('field-newpass').style.display = (mode === 'forgot') ? 'block' : 'none';
+            
+            document.getElementById('tab-login').style.borderBottom = mode==='login'?'2px solid var(--acc)':'none';
+            document.getElementById('tab-login').style.color = mode==='login'?'var(--acc)':'#666';
+            document.getElementById('tab-register').style.borderBottom = mode==='register'?'2px solid var(--acc)':'none';
+            document.getElementById('tab-register').style.color = mode==='register'?'var(--acc)':'#666';
+            
+            document.getElementById('link-forgot').style.display = (mode === 'login') ? 'block' : 'none';
+            document.getElementById('link-login').style.display = (mode === 'forgot' || mode === 'register') ? 'block' : 'none';
+            
+            const btn = document.getElementById('auth-btn');
+            if(mode === 'login') btn.innerText = "MASUK SYSTEM";
+            else if(mode === 'register') btn.innerText = "DAFTAR AKUN";
+            else btn.innerText = "RESET PASSWORD";
+            document.getElementById('auth-msg').innerText = "";
+        }
+
+        function handleAuth(e) {
+            e.preventDefault(); playSfx('click');
+            const db = getDB();
+            const user = document.getElementById('username').value.trim().toLowerCase();
+            const pass = document.getElementById('password').value;
+            const token = document.getElementById('token-input').value;
+            const newPass = document.getElementById('new-password').value;
+            const msg = document.getElementById('auth-msg');
+
+            if(!user) return msg.innerText = "Username wajib diisi!";
+
+            if(currentAuthMode === 'register') {
+                if(db[user]) { msg.innerText = "Username sudah ada!"; msg.style.color = "#ff7675"; } 
+                else {
+                    if(!pass) return msg.innerText = "Password kosong!";
+                    db[user] = { password: pass, saldo: 0, token: 0, history: [], tutDone: false };
+                    saveDB(db); msg.innerText = "Daftar Berhasil!"; msg.style.color = "#00cec9";
+                    setTimeout(() => switchAuth('login'), 1500);
+                }
+            } else if(currentAuthMode === 'login') {  
+                if(db[user] && db[user].password === pass) {
+                    currentUser = { username: user, ...db[user] };
+                    sessionStorage.setItem('activeUser', JSON.stringify({username: user}));
+                    closeAuthModal(); updateUI(); checkTutorial();
+                } else { msg.innerText = "Login Gagal!"; msg.style.color = "#ff7675"; }
+            } else if(currentAuthMode === 'forgot') {
+                if(!db[user]) return msg.innerText = "User salah!";
+                if(token !== MASTER_TOKEN) return msg.innerText = "Token salah!";
+                db[user].password = newPass; saveDB(db); msg.innerText = "Reset Sukses!"; msg.style.color = "#00cec9";
+                setTimeout(() => switchAuth('login'), 2000);
+            }
+        }
+        function askToken() { window.open(`https://wa.me/6283125398104?text=Lupa%20pass`, '_blank'); }
+        function logout() { if(confirm("Logout?")) { sessionStorage.removeItem('activeUser'); currentUser = null; toggleSidebar(false); location.reload(); } }
+        
+        /* ==================== 4. NAV ==================== */
+        function toggleSidebar(force) {
+            const sb = document.getElementById('sidebar');
+            const ov = document.getElementById('sidebar-overlay');
+            if (typeof force === 'boolean') {
+                if (force) { sb.classList.add('active'); ov.classList.add('active'); }
+                else { sb.classList.remove('active'); ov.classList.remove('active'); }
+            } else { sb.classList.toggle('active'); ov.classList.toggle('active'); }
+            playSfx('click');
+        }
+
+        function showPage(id) {
+            playSfx('click');
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            
+            const navMap = { 'home':0, 'shop':1, 'spin':2, 'topup':3, 'profile':4 };
+            if(navMap[id] !== undefined) document.querySelectorAll('.nav-btn')[navMap[id]].classList.add('active');
+
+            if (id !== 'topup') activeOrder = null; 
+            else if(!activeOrder) preparePaymentUI(); 
+            window.scrollTo(0,0);
+        }
+
+        /* ==================== 5. SHOP & PAY ==================== */
+        function renderShop() {
+            const grid = document.getElementById('shop-grid');
+            if(!grid) return; grid.innerHTML = '';
+            products.forEach((p, index) => {
+                if(index === 9) grid.innerHTML += `<div class="prod-sep">>>> GUARANTEED ACCESS <<<</div>`;
+                if(index === 14) grid.innerHTML += `<div class="prod-sep">>>> STANDARD ACCESS <<<</div>`;
+                const div = document.createElement('div');
+                div.className = 'product';
+                div.innerHTML = `${p.isHot ? '<div class="hot-badge">🔥 HOT</div>' : ''}
+                    <img src="assets/product.png"><h3>${p.name}</h3><p>IDR ${p.price.toLocaleString('id-ID')}</p>
+                    <button class="cyber-btn full-width" onclick='buyProduct(${JSON.stringify(p)})'>BELI AKSES</button>`;
+                grid.appendChild(div);
+            });
+        }
+
+        function buyProduct(item) {
+            playSfx('click'); activeOrder = item;
+            activeOrder.inv = "INV-" + Date.now().toString().slice(-6);
+            showPage('topup'); preparePaymentUI();
+        }
+
+        function preparePaymentUI() {
+            const invArea = document.getElementById('invoice-area');
+            const manualArea = document.getElementById('topup-manual');
+            const btnKonfirm = document.getElementById('btn-konfirmasi');
+            const btnLoad = document.getElementById('btn-loading');
+            const btnAkses = document.getElementById('btn-akses');
+
+            btnKonfirm.style.display = 'block'; btnLoad.style.display = 'none'; btnAkses.style.display = 'none';
+
+            if (activeOrder) {
+                invArea.style.display = 'block'; manualArea.style.display = 'none';
+                document.getElementById('inv-no').innerText = "#" + activeOrder.inv;
+                document.getElementById('inv-item').innerText = activeOrder.name;
+                document.getElementById('inv-price').innerText = "IDR " + activeOrder.price.toLocaleString('id-ID');
+                document.getElementById('inv-total').innerText = "IDR " + activeOrder.price.toLocaleString('id-ID');
+            } else {
+                invArea.style.display = 'none'; manualArea.style.display = 'block';
+            }
+        }
+        
+        function processTransaction() {
+            playSfx('click'); let message = "";
+            const username = currentUser ? currentUser.username : "GUEST";
+
+            if (activeOrder) {
+                message = `🧾 *INVOICE ORDER*\n🆔 ${activeOrder.inv}\n👤 ${username}\n📦 ${activeOrder.name}\n💰 IDR ${activeOrder.price.toLocaleString('id-ID')}\n\nMohon verifikasi.`;
+            } else {
+                const val = document.getElementById('topup-amount').value;
+                if(!val || val < 1000) return alert("Min deposit 1.000");
+                message = `💎 *DEPOSIT SALDO*\n👤 ${username}\n💰 IDR ${parseInt(val).toLocaleString('id-ID')}\n\nMohon proses.`;
+            }
+
+            window.open(`https://wa.me/6283125398104?text=${encodeURIComponent(message)}`, '_blank');
+
+            const btnKonfirm = document.getElementById('btn-konfirmasi');
+            const btnLoad = document.getElementById('btn-loading');
+            const btnAkses = document.getElementById('btn-akses');
+            const timerSpan = document.getElementById('timer');
+
+            btnKonfirm.style.display = 'none'; btnLoad.style.display = 'block';
+
+            let timeLeft = 15;
+            const countdown = setInterval(() => {
+                timeLeft--; timerSpan.innerText = timeLeft;
+                if(timeLeft <= 0) {
+                    clearInterval(countdown); btnLoad.style.display = 'none'; playSfx('win');
+                    if(activeOrder) {
+                        if(currentUser) {
+                            const db = getDB();
+                            const bonus = Math.floor(activeOrder.price / 1000);
+                            db[currentUser.username].token += bonus;
+                            saveDB(db); checkSession();
+                            alert(`Transaksi! Cashback +${bonus} Token.`);
+                        }
+                        btnAkses.style.display = 'block';
+                        saveHistory(`Beli ${activeOrder.name}`, activeOrder.price, activeOrder.link);
+                    } else {
+                        alert("Deposit terkirim! Tunggu admin."); showPage('home');
+                    }
+                }
+            }, 1000);
+        }
+
+        function openProductLink() {
+            if(activeOrder && activeOrder.link) window.open(activeOrder.link, '_blank');
+            else alert("Admin akan kirim detail via WA.");
+        }
+
+        function saveHistory(desc, amount, link = null) {
+            const tx = { desc: desc, amount: "IDR "+amount.toLocaleString(), date: new Date().toLocaleDateString(), type: 'out', link: link };
+            if(currentUser) {
+                const db = getDB(); db[currentUser.username].history.push(tx); saveDB(db); checkSession();
+            } else {
+                const h = JSON.parse(localStorage.getItem(GUEST_HIST_KEY)) || [];
+                h.push(tx); localStorage.setItem(GUEST_HIST_KEY, JSON.stringify(h)); renderHistory();
+            }
+        }
+
+        function renderHistory() {
+            const list = document.getElementById('hist-list');
+            if(!list) return;
+            let data = currentUser ? currentUser.history : JSON.parse(localStorage.getItem(GUEST_HIST_KEY)) || [];
+            list.innerHTML = data.length === 0 ? '<p style="text-align:center;">Belum ada transaksi</p>' : '';
+            data.slice().reverse().forEach(h => {
+                const linkHtml = h.link ? `<br><a href="${h.link}" target="_blank" style="color:var(--acc)">[BUKA AKSES]</a>` : '';
+                list.innerHTML += `<div class="method" style="display:block;"><div style="display:flex;justify-content:space-between;"><div><b>${h.desc}</b><br><small>${h.date}</small>${linkHtml}</div><div style="color:#ff7675">${h.amount}</div></div></div>`;
+            });
+        }
+        /* ==================== LOGIKA SPIN ULTIMATE ==================== */
+        
+
+
+/* ==================== SPIN FINAL (KALIBRASI -45°) ==================== */
+
+// 1. DATA HADIAH (SUDUT SUDAH DIGESER BIAR PAS)
+const spinPrizes = [
+    // Urutan: Merah -> Kuning -> Hitam...
+    // stopAngle sudah dikalibrasi karena laporan meleset 1 kolom
+    { label: "10 TKN", val: 10, type: "token", color: "#d63031", icon:'<i class="fas fa-gem"></i>', chance: 20, stopAngle: -67.5 },    // MERAH
+    { label: "ZONK 2", val: 0, type: "zonk", color: "#f1c40f", icon:'<i class="fas fa-bomb"></i>', chance: 30, stopAngle: -112.5 },   // KUNING
+    { label: "50 TKN", val: 50, type: "token", color: "#2d3436", icon:'<i class="fas fa-star"></i>', chance: 5, stopAngle: -157.5 },  // HITAM
+    { label: "SUPERGRUP", val: "https://t.me/+XTHT-nfZ1c9hZDRl", type: "grand", color: "#e67e22", icon:'<i class="fas fa-crown"></i>', chance: 1, stopAngle: -202.5 }, // ORANGE
+    { label: "AKUN", val: "akun", type: "grand", color: "#9b59b6", icon:'<i class="fas fa-user-astronaut"></i>', chance: 1, stopAngle: -247.5 }, // UNGU
+    { label: "500", val: 500, type: "saldo", color: "#e84393", icon:'<i class="fas fa-coins"></i>', chance: 20, stopAngle: -292.5 },  // PINK
+    { label: "1.000", val: 1000, type: "saldo", color: "#0984e3", icon:'<i class="fas fa-money-bill-wave"></i>', chance: 10, stopAngle: -337.5 }, // BIRU
+    { label: "ZONK 1", val: 0, type: "zonk", color: "#00cec9", icon:'<i class="fas fa-times-circle"></i>', chance: 30, stopAngle: -382.5 }  // CYAN
+];
+
+// 2. RENDER RODA (Full CSS Gradient)
+function renderWheel() {
+    const w = document.getElementById('wheel');
+    if(!w) return;
+    w.innerHTML = "";
+    
+    // Background Warna
+    let gradient = "conic-gradient(";
+    spinPrizes.forEach((p, i) => {
+        gradient += `${p.color} ${i * 12.5}% ${(i + 1) * 12.5}%,`;
+    });
+    w.style.background = gradient.slice(0, -1) + ")";
+
+    // Teks & Icon
+    spinPrizes.forEach((p, i) => {
+        // Rumus posisi text (45 derajat per slice)
+        const rotation = (i * 45) + 22.5 - 90; 
+        w.innerHTML += `
+            <div class="wheel-text" style="transform: rotate(${rotation}deg);">
+                <div class="wheel-in">
+                    ${p.icon}<br>${p.label}
+                </div>
+            </div>`;
+    });
+}
+
+// 3. FUNGSI PUTAR (SINKRONISASI TOTAL)
+function spinWheel() {
+    const COST = 10;
+    
+    if(!currentUser) return openAuthModal('login');
+    if(currentUser.token < COST) return alert(`Token kurang! Sisa: ${currentUser.token}`);
+    if(!confirm(`Putar Spin? (-${COST} Token)`)) return;
+
+    // Potong Token
+    const db = getDB(); 
+    db[currentUser.username].token -= COST; 
+    saveDB(db); checkSession();
+
+    playSfx('spin');
+    const w = document.getElementById('wheel');
+    const res = document.getElementById('spin-res'); 
+    res.innerHTML = "MENCARI HOKI...";
+    
+    // Logic Random (Weighted)
+    let totalChance = 0;
+    spinPrizes.forEach(p => totalChance += p.chance);
+    let random = Math.random() * totalChance;
+    let idx = 0;
+    for(let i = 0; i < spinPrizes.length; i++) {
+        random -= spinPrizes[i].chance;
+        if(random <= 0) { idx = i; break; }
+    }
+    const win = spinPrizes[idx];
+
+    // Putar Roda (3600 derajat + Sudut Kunci)
+    const targetRotation = 3600 + win.stopAngle;
+    w.style.transform = `rotate(${targetRotation}deg)`;
+    
+    // Hasil Berhenti
+    setTimeout(() => {
+        w.style.transition = 'none'; 
+        w.style.transform = `rotate(${win.stopAngle}deg)`;
+        
+        if(win.type === 'zonk') {
+            res.innerHTML = `<span style="color:#ff7675">ZONK! 🤣</span>`;
+        } else {
+            playSfx('win'); 
+            res.innerHTML = `<span style="color:var(--acc)">WIN: ${win.label}</span>`;
+            
+            if(win.type === 'grand') {
+                 if(win.label === "SUPERGRUP") {
+                    saveHistory(`JACKPOT: ${win.label}`, 0, win.val);
+                    alert(`JACKPOT!! 🎉 Link Akses masuk ke RIWAYAT.`);
+                } else {
+                    alert(`JACKPOT ${win.label}! Lapor Admin.`);
+                }
+            } 
+            else if(win.type === 'saldo') {
+                db[currentUser.username].saldo += win.val;
+                alert(`Selamat! Saldo +${win.val}`);
+            }
+            else if(win.type === 'token') {
+                db[currentUser.username].token += win.val;
+                alert(`Selamat! Token +${win.val}`);
+            }
+            saveDB(db); checkSession();
+        }
+        
+        setTimeout(() => { w.style.transition = '4s cubic-bezier(0.15,0,0.15,1)'; }, 100);
+    }, 4000);
+}
+
+        
+
+  
+
+
+
+        
+        /* ==================== 7. EXTRAS ==================== */
+                /* ==================== SLIDER SWIPE MANUAL (UPGRADED) ==================== */
+        function initSlider() {
+            const wrapper = document.getElementById('slider-wrapper');
+            const slides = document.querySelectorAll('.slide');
+            
+            if (!wrapper || slides.length === 0) return;
+
+            let index = 0;
+            let startX = 0;
+            let isDragging = false;
+            let slideInterval;
+
+            // Fungsi Update Posisi
+            const updateSlide = () => {
+                wrapper.style.transform = `translateX(-${index * 100}%)`;
+            };
+
+            const nextSlide = () => {
+                index = (index + 1) % slides.length;
+                updateSlide();
+            };
+
+            const prevSlide = () => {
+                index = (index - 1 + slides.length) % slides.length;
+                updateSlide();
+            };
+
+            // Timer Otomatis
+            const startAutoSlide = () => {
+                clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, 3000); // Ganti tiap 3 detik
+            };
+
+            // --- LOGIKA SWIPE / GESER MANUAL ---
+            
+            // 1. Sentuhan Jari (Mobile)
+            wrapper.addEventListener('touchstart', (e) => {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+                clearInterval(slideInterval); // Stop auto saat disentuh
+            });
+
+            wrapper.addEventListener('touchend', (e) => {
+                if (!isDragging) return;
+                const endX = e.changedTouches[0].clientX;
+                handleGesture(startX, endX);
+                isDragging = false;
+                startAutoSlide(); // Jalan lagi setelah dilepas
+            });
+
+            // 2. Klik Mouse (Desktop)
+            wrapper.addEventListener('mousedown', (e) => {
+                startX = e.clientX;
+                isDragging = true;
+                e.preventDefault(); // Biar gambar ga ke-select
+                clearInterval(slideInterval);
+            });
+
+            wrapper.addEventListener('mouseup', (e) => {
+                if (!isDragging) return;
+                const endX = e.clientX;
+                handleGesture(startX, endX);
+                isDragging = false;
+                startAutoSlide();
+            });
+
+            // 3. Cek Arah Geser
+            const handleGesture = (start, end) => {
+                const threshold = 50; // Minimal geser 50px baru dianggap swipe
+                if (start - end > threshold) {
+                    nextSlide(); // Geser ke Kiri (Next)
+                } else if (end - start > threshold) {
+                    prevSlide(); // Geser ke Kanan (Prev)
+                }
+            };
+
+            // Mulai
+            startAutoSlide();
+        }
+
+        /* ==================== SISTEM KOMENTAR & TESTIMONI FULL ==================== */
+
+        // 1. DATA TESTIMONI (FIXED & LENGKAP)
+        const defComs = [
+            {u:"toke", t:"good"},
+            {u:"A p", t:"Jossssss"},
+            {u:"sopi", t:"mntp"},
+            {u:"Ocil", t:"Mantap"},
+            {u:"Ahmad Rifa'i", t:"Mantap"},
+            {u:"Acha", t:"Mantap"},
+            {u:"Gbk Yus", t:"Mantap 10000/10 pokoke"},
+            {u:"askar", t:"mantap"},
+            {u:"Chreeezzz", t:"Mantepp pkoknya Mahh🤙🏻"},
+            {u:"🤠", t:"Mantapp"},
+            {u:".. Kaka bu", t:"Mntppp"},
+            {u:"J R", t:"top martokop"},
+            {u:"R", t:"mantap"},
+            {u:"cookie", t:"paling terbaik"},
+            {u:"Ridho Harun", t:"Baik"},
+            {u:"Grizz Lazy", t:"gg"},
+            {u:"Acha", t:"Gercep dan dibantu, mantap lah"}
+        ];
+
+        // 2. FUNGSI MUAT KOMENTAR (INIT)
+        function initComments() {
+            const list = document.getElementById('com-list'); 
+            if(!list) return;
+            
+            // Bersihkan list lama biar gak duplikat
+            list.innerHTML = ""; 
+            
+            // A. Render Testimoni Bawaan (Dari Script)
+            defComs.forEach(c => {
+                // Parameter: Nama, Teks, isMe=false, avatar=null
+                addCom(c.u, c.t, false, null);
+            });
+            
+            // B. Render Komentar User Sendiri (Dari HP/LocalStorage)
+            const myComs = JSON.parse(localStorage.getItem('web_comments')) || [];
+            myComs.forEach(c => {
+                addCom(c.u, c.t, true, c.avatar); 
+            });
+
+            // Auto Scroll ke Paling Bawah
+            setTimeout(() => { 
+                list.scrollTop = list.scrollHeight; 
+            }, 500);
+        }
+
+        // 3. FUNGSI BIKIN BUBBLE CHAT (RENDER)
+        function addCom(name, text, me=false, customAvatar=null) {
+            const list = document.getElementById('com-list');
+            
+            // LOGIKA AVATAR:
+            // - Jika ada customAvatar (Foto Member), pakai itu.
+            // - Jika tidak, pakai API UI Avatars (Inisial Nama).
+            let url = "";
+            if(customAvatar) {
+                url = customAvatar;
+            } else {
+                // Background Random biar warna-warni
+                url = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff&size=64`;
+            }
+            
+            const item = document.createElement('div');
+            item.className = me ? 'chat-item me' : 'chat-item';
+            
+            // HTML Bubble Chat
+            item.innerHTML = `
+                <div class="avt" style="width:35px; height:35px; min-width:35px; border-width:1px; margin:0; overflow:hidden;">
+                    <img src="${url}" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <div class="chat-content">
+                    <span class="chat-name">${name}</span>
+                    ${text}
+                </div>
+            `;
+            list.appendChild(item);
+        }
+
+        // 4. FUNGSI KIRIM KOMENTAR BARU
+        function postComment() {
+            const inp = document.getElementById('com-input'); 
+            const txt = inp.value.trim(); 
+            if(!txt) return;
+            
+            // Tentukan Identitas Pengirim
+            const user = currentUser ? currentUser.username : "Guest";
+            const userAvatar = currentUser ? currentUser.avatar : null;
+            
+            // 1. Tampilkan Langsung di Layar
+            addCom(user, txt, true, userAvatar);
+            
+            // 2. Simpan ke LocalStorage HP
+            const local = JSON.parse(localStorage.getItem('web_comments')) || []; 
+            local.push({
+                u: user, 
+                t: txt, 
+                avatar: userAvatar // Simpan foto profil juga
+            });
+            localStorage.setItem('web_comments', JSON.stringify(local)); 
+            
+            // 3. Reset Input & Scroll
+            inp.value = "";
+            const list = document.getElementById('com-list');
+            list.scrollTop = list.scrollHeight;
+            playSfx('click');
+        }
+
+        /* ==================== FITUR GANTI FOTO PROFIL ==================== */
+        
+        function triggerUpload() {
+            if(!currentUser) return alert("Login dulu untuk ganti foto profil!");
+            document.getElementById('file-input').click();
+        }
+
+        function handleAvatarUpload(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                
+                // Batasi ukuran file (Max 2MB biar localStorage ga jebol)
+                if(input.files[0].size > 2000000) return alert("File terlalu besar! Max 2MB.");
+
+                reader.onload = function(e) {
+                    const base64Img = e.target.result;
+                    
+                    // 1. Update Tampilan
+                    document.getElementById('prof-img').src = base64Img;
+                    
+                    // 2. Simpan ke Database User
+                    const db = getDB();
+                    db[currentUser.username].avatar = base64Img;
+                    saveDB(db);
+                    
+                    // 3. Update Session
+                    currentUser.avatar = base64Img;
+                    alert("Foto Profil Berhasil Diganti!");
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        // UPDATE UI SAAT LOGIN (Biar Foto Muncul)
+        const originalUpdateUI = updateUI; // Backup fungsi lama
+        updateUI = function() {
+            originalUpdateUI(); // Jalankan fungsi asli
+            
+            const img = document.getElementById('prof-img');
+            if(currentUser) {
+                // Kalau member punya avatar, pakai. Kalau tidak, pakai inisial.
+                if(currentUser.avatar) {
+                    img.src = currentUser.avatar;
+                } else {
+                    img.src = `https://ui-avatars.com/api/?name=${currentUser.username}&background=00cec9&color=fff`;
+                }
+            } else {
+                // Balikin ke Guest
+                img.src = `https://ui-avatars.com/api/?name=Guest&background=333&color=fff`;
+            }
+        }
+
+
+        // --- FUNGSI INIT CHAT BARU ---
+        function initComments() {
+            const list = document.getElementById('com-list'); 
+            if(!list) return;
+            
+            list.innerHTML = ""; 
+            
+            // 1. Render Chat Bawaan
+            defComs.forEach(c => addCom(c.u, c.t));
+            
+            // 2. Render Chat User Sendiri (Simpanan HP)
+            const myComs = JSON.parse(localStorage.getItem('web_comments')) || [];
+            myComs.forEach(c => addCom(c.u, c.t, true));
+
+            // Auto scroll ke bawah
+            setTimeout(() => { list.scrollTop = list.scrollHeight; }, 100);
+        }
+
+        // --- FUNGSI RENDER BUBBLE CHAT KEREN ---
+        function addCom(name, text, me=false) {
+            const list = document.getElementById('com-list');
+            // Avatar Random Keren
+            const url = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random&color=fff`;
+            
+            const item = document.createElement('div');
+            item.className = me ? 'chat-item me' : 'chat-item';
+            
+            item.innerHTML = `
+                <div class="avt"><img src="${url}"></div>
+                <div class="chat-content">
+                    <span class="chat-name">${name}</span>
+                    ${text}
+                </div>
+            `;
+            list.appendChild(item);
+        }
+
+        // --- FUNGSI POST KOMENTAR ---
+        function postComment() {
+            const inp = document.getElementById('com-input'); 
+            const txt = inp.value.trim(); 
+            if(!txt) return;
+            
+            const user = currentUser ? currentUser.username : "Guest";
+            
+            // Tampilkan Chat
+            addCom(user, txt, true);
+            
+            // Simpan ke HP
+            const local = JSON.parse(localStorage.getItem('web_comments')) || []; 
+            local.push({u:user, t:txt});
+            localStorage.setItem('web_comments', JSON.stringify(local)); 
+            
+            inp.value = "";
+            
+            // Scroll & Sound
+            const list = document.getElementById('com-list');
+            list.scrollTop = list.scrollHeight;
+            playSfx('click');
+        }
+
+                /* ==================== MISI SHARE (UPDATED LINK) ==================== */
+        function executeShareTask() {
+            // 1. Cek Limit Harian (Max 10x)
+            const today = new Date().toDateString();
+            let c = parseInt(localStorage.getItem('share_c')) || 0;
+            
+            // Reset kalau beda hari
+            if(localStorage.getItem('share_d') !== today) { 
+                c = 0; 
+                localStorage.setItem('share_d', today); 
+            }
+            
+            if(c >= 10) return alert("Misi Harian Selesai! Kembali lagi besok.");
+
+            // 2. BUKA LINK SHARE (Link Baru)
+            window.open("https://t.me/share/url?url=Media%20Rare%20Free%20%F0%9F%92%A6%20https%3A%2F%2Ft.me%2F%2BAgZRdhFHxFpmNzI1", "_blank");
+
+            // 3. PROSES REWARD (Delay 3 Detik)
+            setTimeout(() => {
+                c++; 
+                localStorage.setItem('share_c', c);
+                
+                // Kalau Member -> Tambah Token
+                if(currentUser) { 
+                    const db = getDB(); 
+                    db[currentUser.username].token += 50; 
+                    saveDB(db); 
+                    checkSession(); 
+                }
+                
+                alert("Share Berhasil! +50 Token ditambahkan."); 
+                updateShareUI();
+            }, 3000);
+        }
+
+        function updateShareUI() {
+            const c=parseInt(localStorage.getItem('share_c'))||0;
+            if(document.getElementById('share-txt')) document.getElementById('share-txt').innerText=`${c}/10`;
+            if(document.getElementById('share-bar')) document.getElementById('share-bar').style.width=`${(c/10)*100}%`;
+        }
+        function updateTopupInfo() { /* Dummy */ }
+        function copy(id) { navigator.clipboard.writeText(document.getElementById(id).innerText); alert("Disalin"); }
+        function downloadQRIS() { const a=document.createElement('a'); a.href='assets/qris.jpg'; a.download='QRIS.jpg'; a.click(); }
+        function claimDailyToken() {
+            if(!currentUser) return;
+            const t=new Date().toDateString();
+            if(localStorage.getItem('daily_'+currentUser.username)===t) return alert("Sudah klaim!");
+            const db=getDB(); db[currentUser.username].token+=100; saveDB(db);
+            localStorage.setItem('daily_'+currentUser.username,t); checkSession(); alert("+100 Token");
+        }
+        function checkTutorial(){ if(currentUser && !currentUser.tutDone) document.getElementById('tutorial-overlay').classList.add('active'); }
+        function nextTutorial(){ document.getElementById('tutorial-overlay').classList.remove('active'); const db=getDB(); db[currentUser.username].tutDone=true; saveDB(db); }
+        function endTutorial(){ nextTutorial(); }
+                function redeemCode() {
+            const code = prompt("Masukkan Kode Promo:");
+            if(!code) return;
+
+            // KODE RAHASIA: NEXUS_PROMO (Huruf besar/kecil bisa)
+            if(code.toUpperCase().trim() === "NEXUS_PROMO") {
+                playSfx('win'); 
+                alert("SELAMAT! Kode Valid. \nKlik OK untuk mengambil hadiahmu.");
+                window.open("https://t.me/+pAmveijKnTowNTdl", "_blank");
+            } else {
+                playSfx('click'); 
+                alert("Kode Salah atau Kadaluarsa!");
+            }
+        }
+
+        /* ==================== SISTEM POPUP IKLAN ==================== */
+        
+        // 1. DATA IKLAN (3 MACAM)
+        const promoAds = [
+            { 
+                img: "assets/iklan1.jpg", 
+                link: "https://wa.me/6283125398104?text=Halo%20Admin%2C%20saya%20tertarik%20promo%20Nomor%201" 
+            },
+            { 
+                img: "assets/iklan2.jpg", 
+                link: "https://wa.me/6283125398104?text=Halo%20Admin%2C%20saya%20tertarik%20promo%20Nomor%202" 
+            },
+            { 
+                img: "assets/iklan3.jpg", 
+                link: "https://wa.me/6283125398104?text=Halo%20Admin%2C%20saya%20tertarik%20promo%20Nomor%203" 
+            }
+        ];
+
+        // 2. FUNGSI MUNCULKAN IKLAN
+        function showPromo() {
+            // Pilih 1 dari 3 secara acak
+            const randIndex = Math.floor(Math.random() * promoAds.length);
+            const selectedAd = promoAds[randIndex];
+
+            // Set Data ke HTML
+            document.getElementById('promo-img').src = selectedAd.img;
+            document.getElementById('promo-link').href = selectedAd.link;
+
+            // Munculkan (Delay dikit biar smooth pas loading)
+            setTimeout(() => {
+                document.getElementById('promo-popup').style.display = 'flex';
+                playSfx('win'); // Efek suara biar user 'ngeh' ada promo
+            }, 1000); 
+        }
+
+        // 3. FUNGSI TUTUP IKLAN
+        function closePromo() {
+            document.getElementById('promo-popup').style.display = 'none';
+            playSfx('click');
+        }
+
+        // 4. JALANKAN SAAT WEB DIBUKA
+        // Masukkan 'showPromo()' ke dalam event listener utama
+        document.addEventListener('DOMContentLoaded', () => {
+            checkSession();
+            renderShop();
+            renderWheel();
+            initSlider();
+            initComments();
+            
+            showPromo(); // <--- TAMBAHKAN INI BIAR MUNCUL
+            
+            if(currentUser) {
+                updateShareUI();
+                setTimeout(checkTutorial, 1500);
+            }
+        });
+
+    </script>
+</body>
+</html>
