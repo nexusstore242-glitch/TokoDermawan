@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sang Dermawan | Cyber Store V2</title>
+    <title>Sang Dermawan | VIP STORE TRUSTED</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -348,11 +348,38 @@
             padding: 10px; /* Tombol lebih tipis */
             font-size: 0.8rem; 
         }
+                /* ==================== STYLE CHIP/KAPSUL HEADER ==================== */
+        .chip {
+            display: flex; align-items: center; gap: 6px;
+            padding: 5px 12px;
+            border-radius: 50px; /* Bikin Lonjong/Kapsul */
+            font-size: 0.75rem; font-weight: bold;
+            cursor: pointer; 
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: transform 0.2s;
+        }
+        .chip:active { transform: scale(0.95); }
+
+        /* Chip Biru (Saldo - Wallet) */
+        .chip.blue {
+            background: rgba(0, 206, 201, 0.15);
+            color: var(--acc); /* Cyan */
+            box-shadow: 0 0 10px rgba(0, 206, 201, 0.1);
+        }
+
+        /* Chip Gold (Token - Petir) */
+        .chip.gold {
+            background: rgba(241, 196, 15, 0.15);
+            color: #f1c40f; /* Kuning Emas */
+            box-shadow: 0 0 10px rgba(241, 196, 15, 0.1);
+        }
         
-        /* 7. Profil & Wallet */
-        .prof-card { padding: 15px; }
-        .avt { width: 60px; height: 60px; font-size: 2.5rem; }
-        .chip { padding: 2px 6px; font-size: 0.65rem; min-width: 70px; }
+        /* Penyesuaian Tombol Menu biar rapi */
+        .menu-btn {
+            background: none; border: none; color: #fff; font-size: 1.2rem; cursor: pointer;
+        }
+
+
 
 /* ==================== FIX TAMPILAN RODA ==================== */
 .wheel-text { 
@@ -419,7 +446,59 @@
 
         @keyframes zoomIn { from{transform:scale(0.5); opacity:0;} to{transform:scale(1); opacity:1;} }
 
+        /* ==================== CYBER MODAL CSS (UPDATE FINAL) ==================== */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); /* Gelap Blur */
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            animation: fadeIn 0.2s ease;
+        }
 
+        .modal-box {
+            background: #1e2029;
+            border: 1px solid var(--acc);
+            box-shadow: 0 0 20px rgba(0, 206, 201, 0.2);
+            padding: 25px;
+            border-radius: 12px;
+            width: 90%; max-width: 320px;
+            text-align: center; /* Default tengah */
+            animation: slideUp 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+        }
+
+        #modal-title {
+            color: var(--acc); font-family: var(--font-head);
+            margin-bottom: 10px; letter-spacing: 1px;
+            font-size: 1.1rem; border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 10px;
+        }
+
+        /* INI YANG PENTING: BIAR TEKS PANDUAN RAPI */
+        #modal-msg { 
+            color: #ddd; 
+            font-size: 0.9rem; 
+            margin-bottom: 20px; 
+            line-height: 1.5;
+            white-space: pre-wrap; /* Supaya 'Enter' (\n) terbaca */
+            text-align: left;      /* Supaya teks rata kiri, enak dibaca */
+        }
+
+        /* Input Redeem */
+        .cyber-input {
+            width: 100%; background: #0f1014; border: 1px solid #444;
+            color: #fff; padding: 10px; border-radius: 5px;
+            margin-bottom: 20px; outline: none; text-align: center;
+        }
+        .cyber-input:focus { border-color: var(--acc); }
+
+        /* Tombol Popup */
+        .modal-btns { display: flex; gap: 10px; justify-content: center; }
+        
+        .cyber-btn.cancel { background: #333; border: 1px solid #555; color: #aaa; }
+        
+        @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+        @keyframes slideUp { from{transform:translateY(20px); opacity:0;} to{transform:translateY(0); opacity:1;} }
     </style>
 </head>
 <body>
@@ -490,35 +569,67 @@
             <div style="margin-top:20px; border-top:1px solid #333; padding-top:20px;">
                 <p class="sb-label">EXTRAS</p>
                 <button onclick="redeemCode()" class="cyber-btn full-width" style="margin-bottom:10px; border:1px solid #a29bfe; color:#a29bfe;">
-                    <i class="fas fa-ticket-alt"></i> REDEEM CODE
+                    <i class="fas fa-ticket-alt"></i> REDEEM CHANEL VIP
                 </button>
             </div>
 
-            <div style="margin-top:10px; border-top:1px solid #333; padding-top:20px;">
+                       <div style="margin-top:10px; border-top:1px solid #333; padding-top:20px;">
                 <p class="sb-label">CONTACT</p>
+                
                 <a href="https://wa.me/6283125398104" class="cyber-btn full-width whatsapp-btn" style="margin-bottom:10px;">
                     <i class="fab fa-whatsapp"></i> WHATSAPP
                 </a>
+
+                <a href="https://t.me/OrangPentingKlikAja" target="_blank" class="cyber-btn full-width" style="background:#0088cc; border:none; margin-bottom:10px;">
+                    <i class="fab fa-telegram"></i> TELEGRAM
+                </a>
             </div>
+
+                    <div style="margin-top:10px; border-top:1px solid #333; padding-top:20px; padding-bottom:50px;">
+                <p class="sb-label">INFORMASI</p>
+                
+                <button onclick="showGuide()" class="cyber-btn full-width" style="border:1px dashed #555; color:#aaa; background:transparent;">
+                    <i class="fas fa-book-open"></i> CARA ORDER
+                </button>
+                
+                <div style="text-align:center; margin-top:15px; color:#555; font-size:0.6rem;">
+                    SANG DERMAWAN V2<br>VIP Store System
+                </div>
+            </div>
+
         </div>
     </div>
 
-   
 
-    <header>
+
+            <header>
         <div class="head-left">
             <button onclick="toggleSidebar()" class="menu-btn"><i class="fas fa-bars"></i></button>
             <div class="logo"><img src="assets/logo.png" alt=""></div>
-            <div class="title"><h1>SANG DERMAWAN</h1><p>CYBER STORE</p></div>
+            <div class="title"><h1>SANG DERMAWAN</h1><p>VIP STORE</p></div>
         </div>
+
         <div class="head-right">
-            <div class="wallet" onclick="showPage('topup')">
-                <div class="chip blue"><i class="fas fa-bolt"></i> <span id="user-saldo">0</span></div>
-                <div class="chip gold"><i class="fas fa-gem"></i> <span id="user-token">0</span></div>
+                        <div class="wallet" style="display:flex; gap:10px; align-items:center;">
+                
+                <div class="chip blue" onclick="showPage('topup')">
+                    <i class="fas fa-wallet"></i> 
+                    <span id="header-saldo">0</span> 
+                </div>
+                
+                <div class="chip gold" onclick="showPage('spin')">
+                    <i class="fas fa-bolt"></i> 
+                    <span id="header-token">0</span>
+                </div>
+
             </div>
+
+            
             <button onclick="toggleMusic()" id="music-btn" class="menu-btn"><i class="fas fa-play"></i></button>
         </div>
     </header>
+
+
 
     <nav class="bottom-nav">
         <button onclick="showPage('home')" class="nav-btn active"><i class="fas fa-home"></i> HOME</button>
@@ -838,30 +949,60 @@
             } else currentUser = null;
             updateUI();
         }
-
+        /* ==================== UPDATE UI (FIX SINKRONISASI) ==================== */
         function updateUI() {
-            const sbGuest = document.getElementById('sb-guest');
-            const sbMember = document.getElementById('sb-member');
-            
+            // A. TAMPILAN HEADER (ATAS) - Cari ID yang baru kita pasang
+            const headSaldo = document.getElementById('header-saldo');
+            const headToken = document.getElementById('header-token');
+
+            // B. TAMPILAN PROFIL (BAWAH)
+            const profName = document.getElementById('prof-name');
+            const profSaldo = document.getElementById('prof-saldo');
+            const profToken = document.getElementById('prof-token');
+            const profImg = document.getElementById('prof-img');
+
             if(currentUser) {
-                document.getElementById('disp-name').innerText = currentUser.username.toUpperCase();
-                document.getElementById('prof-name').innerText = currentUser.username.toUpperCase();
-                document.getElementById('user-saldo').innerText = currentUser.saldo.toLocaleString('id-ID');
-                document.getElementById('user-token').innerText = currentUser.token;
-                document.getElementById('prof-saldo').innerText = "IDR " + currentUser.saldo.toLocaleString('id-ID');
-                document.getElementById('prof-token').innerText = currentUser.token;
-                sbMember.style.display = 'block'; sbGuest.style.display = 'none';
+                // 1. LOGIN MODE: Tampilkan Menu Member
+                if(document.getElementById('sb-guest')) document.getElementById('sb-guest').style.display = 'none';
+                if(document.getElementById('sb-member')) document.getElementById('sb-member').style.display = 'block';
+                if(document.getElementById('header-login-btn')) document.getElementById('header-login-btn').style.display = 'none';
+
+                // 2. UPDATE ANGKA HEADER (PENTING!)
+                // Pastikan elemennya ada dulu biar ga error
+                if(headSaldo) headSaldo.innerText = formatRupiah(currentUser.saldo);
+                if(headToken) headToken.innerText = currentUser.token;
+
+                // 3. UPDATE ANGKA PROFIL
+                if(profName) profName.innerText = currentUser.username.toUpperCase();
+                if(profSaldo) profSaldo.innerText = formatRupiah(currentUser.saldo);
+                if(profToken) profToken.innerText = currentUser.token;
+
+                // 4. UPDATE FOTO PROFIL
+                if(profImg) {
+                    profImg.src = currentUser.avatar ? currentUser.avatar : 
+                    `https://ui-avatars.com/api/?name=${currentUser.username}&background=00cec9&color=fff`;
+                }
+
             } else {
-                document.getElementById('disp-name').innerText = "GUEST";
-                document.getElementById('prof-name').innerText = "GUEST";
-                document.getElementById('user-saldo').innerText = "0";
-                document.getElementById('user-token').innerText = "0";
-                document.getElementById('prof-saldo').innerText = "IDR 0";
-                document.getElementById('prof-token').innerText = "0";
-                sbMember.style.display = 'none'; sbGuest.style.display = 'block';
+                // GUEST MODE: Reset Semua ke 0
+                if(document.getElementById('sb-guest')) document.getElementById('sb-guest').style.display = 'block';
+                if(document.getElementById('sb-member')) document.getElementById('sb-member').style.display = 'none';
+                
+                if(headSaldo) headSaldo.innerText = "0";
+                if(headToken) headToken.innerText = "0";
+                
+                if(profName) profName.innerText = "GUEST";
+                if(profSaldo) profSaldo.innerText = "IDR 0";
+                if(profToken) profToken.innerText = "0";
             }
-            renderHistory();
         }
+
+               
+        // Helper Format Rupiah (Wajib Ada)
+        function formatRupiah(angka) {
+            return "Rp " + angka.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+
 
         let currentAuthMode = 'login';
         function openAuthModal(mode) { toggleSidebar(false); document.getElementById('auth-overlay').classList.add('active'); switchAuth(mode); }
@@ -920,6 +1061,7 @@ function switchAuth(mode) {
                 setTimeout(() => switchAuth('login'), 2000);
             }
         }
+        
         function askToken() { window.open(`https://wa.me/6283125398104?text=Lupa%20pass`, '_blank'); }
         function logout() { if(confirm("Logout?")) { sessionStorage.removeItem('activeUser'); currentUser = null; toggleSidebar(false); location.reload(); } }
         
@@ -990,53 +1132,96 @@ function switchAuth(mode) {
             }
         }
         
+        /* ==================== TRANSAKSI FINAL (TELEGRAM + COPY PASTE) ==================== */
+        
         function processTransaction() {
-            playSfx('click'); let message = "";
+            playSfx('click'); 
+            let message = "";
             const username = currentUser ? currentUser.username : "GUEST";
 
+            // 1. SIAPKAN FORMAT PESAN (INVOICE / TOPUP)
             if (activeOrder) {
-                message = `🧾 *INVOICE ORDER*\n🆔 ${activeOrder.inv}\n👤 ${username}\n📦 ${activeOrder.name}\n💰 IDR ${activeOrder.price.toLocaleString('id-ID')}\n\nMohon verifikasi.`;
+                // Format Pesanan Barang
+                message = `🧾 *INVOICE ORDER*\n🆔 ${activeOrder.inv}\n👤 ${username}\n📦 ${activeOrder.name}\n💰 IDR ${activeOrder.price.toLocaleString('id-ID')}\n\nMohon verifikasi min, saya sudah transfer/siap bayar.`;
             } else {
+                // Format Topup Saldo
                 const val = document.getElementById('topup-amount').value;
                 if(!val || val < 1000) return alert("Min deposit 1.000");
-                message = `💎 *DEPOSIT SALDO*\n👤 ${username}\n💰 IDR ${parseInt(val).toLocaleString('id-ID')}\n\nMohon proses.`;
+                message = `💎 *DEPOSIT SALDO*\n👤 ${username}\n💰 IDR ${parseInt(val).toLocaleString('id-ID')}\n\nMohon proses min, mau isi saldo.`;
             }
 
-            window.open(`https://wa.me/6283125398104?text=${encodeURIComponent(message)}`, '_blank');
+            // 2. PROSES COPY KE CLIPBOARD & BUKA TELEGRAM
+            navigator.clipboard.writeText(message).then(() => {
+                
+                // Munculkan Popup Info (Pakai style cyber yang sudah kita pasang)
+                showModal('INFO', 'Data Transaksi sudah DISALIN!\n\nKlik OK, lalu TEMPEL (PASTE) di chat Telegram Admin.', false, () => {
+                    // Buka Telegram Admin
+                    window.open("https://t.me/OrangPentingKlikAja", "_blank");
+                });
 
+            }).catch(err => {
+                // Jaga-jaga kalau browser hp user jadul
+                alert("Gagal copy otomatis. Silahkan chat admin manual.");
+                window.open("https://t.me/OrangPentingKlikAja", "_blank");
+            });
+
+            // 3. JALANKAN TIMER VERIFIKASI (15 DETIK)
+            // Ini jalan di background sambil user chat di Telegram
             const btnKonfirm = document.getElementById('btn-konfirmasi');
             const btnLoad = document.getElementById('btn-loading');
             const btnAkses = document.getElementById('btn-akses');
             const timerSpan = document.getElementById('timer');
 
-            btnKonfirm.style.display = 'none'; btnLoad.style.display = 'block';
+            // Ubah tombol jadi Loading
+            if(btnKonfirm) btnKonfirm.style.display = 'none'; 
+            if(btnLoad) btnLoad.style.display = 'block';
 
             let timeLeft = 15;
             const countdown = setInterval(() => {
-                timeLeft--; timerSpan.innerText = timeLeft;
+                timeLeft--; 
+                if(timerSpan) timerSpan.innerText = timeLeft;
+                
+                // Waktu Habis (Admin dianggap sudah verifikasi)
                 if(timeLeft <= 0) {
-                    clearInterval(countdown); btnLoad.style.display = 'none'; playSfx('win');
+                    clearInterval(countdown); 
+                    if(btnLoad) btnLoad.style.display = 'none'; 
+                    playSfx('win');
+
                     if(activeOrder) {
+                        // LOGIKA ORDER SELESAI
                         if(currentUser) {
                             const db = getDB();
+                            // Bonus Token (1 Token tiap kelipatan 1000)
                             const bonus = Math.floor(activeOrder.price / 1000);
-                            db[currentUser.username].token += bonus;
-                            saveDB(db); checkSession();
-                            alert(`Transaksi! Cashback +${bonus} Token.`);
+                            if(bonus > 0) {
+                                db[currentUser.username].token += bonus;
+                                saveDB(db); checkSession();
+                                // Alert kecil biar user tau dapet bonus
+                                setTimeout(() => alert(`Transaksi Sukses! Cashback +${bonus} Token.`), 500);
+                            }
                         }
-                        btnAkses.style.display = 'block';
+                        // Munculkan Tombol Akses Produk
+                        if(btnAkses) btnAkses.style.display = 'block';
+                        
+                        // Simpan Riwayat
                         saveHistory(`Beli ${activeOrder.name}`, activeOrder.price, activeOrder.link);
                     } else {
-                        alert("Deposit terkirim! Tunggu admin."); showPage('home');
+                        // LOGIKA TOPUP SELESAI
+                        alert("Permintaan Deposit terkirim! Tunggu konfirmasi admin masuk ke Saldo."); 
+                        showPage('home');
                     }
                 }
             }, 1000);
         }
 
         function openProductLink() {
-            if(activeOrder && activeOrder.link) window.open(activeOrder.link, '_blank');
-            else alert("Admin akan kirim detail via WA.");
+            if(activeOrder && activeOrder.link) {
+                window.open(activeOrder.link, '_blank');
+            } else {
+                alert("Link akses akan dikirim Admin via Telegram setelah pembayaran valid.");
+            }
         }
+
 
         function saveHistory(desc, amount, link = null) {
             const tx = { desc: desc, amount: "IDR "+amount.toLocaleString(), date: new Date().toLocaleDateString(), type: 'out', link: link };
@@ -1607,6 +1792,37 @@ function spinWheel() {
                 setTimeout(checkTutorial, 1500);
             }
         });
+
+    /* ==================== FITUR PANDUAN (GLOBAL) ==================== */
+    
+    // Pastikan fungsi ini ada di LUAR kurung kurawal fungsi lain
+    function showGuide() {
+        console.log("Tombol Panduan Diklik!"); // Cek di Console
+        
+        // Teks Panduan
+        const guideText = 
+        "🔰 CARA BELI AKSES / PRODUK:\n" +
+        "1. Login dulu biar transaksi aman.\n" +
+        "2. Pilih Produk di menu SHOP.\n" +
+        "3. Klik 'BELI AKSES' -> Resi Otomatis Disalin.\n" +
+        "4. Klik OK -> Kirim ke Telegram Admin.\n" +
+        "5. Lakukan Pembayaran & Tunggu Verifikasi.\n\n" +
+        
+        "⚡ FITUR TOKEN:\n" +
+        "- Token didapat dari Bonus Topup/Belanja.\n" +
+        "- Gunakan Token buat main SPIN berhadiah.\n\n" +
+        
+        "🎟️ REDEEM CODE:\n" +
+        "Cari kode promo di Channel Telegram kami untuk dapat VIP Gratis!";
+
+        // Panggil Popup
+        // Pastikan showModal sudah ada di kodemu (langkah sebelumnya)
+        if(typeof showModal === "function") {
+            showModal('INFO', guideText, false, null);
+        } else {
+            alert(guideText); // Jaga-jaga kalau modal error, pake alert biasa
+        }
+    }
 
     </script>
 </body>
