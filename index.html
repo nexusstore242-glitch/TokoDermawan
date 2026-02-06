@@ -814,7 +814,8 @@
         let activeOrder = null; 
         let isSpinning = false;
 
-        const products = [
+                const products = [
+            // --- TIPE LINK (Auto Akses) ---
             {name:"SUPERGRUP VIP", price:50000, type:"link", link:"https://t.me/+XTHT-nfZ1c9hZDRl", isHot: true}, 
             {name:"STW PREMIUM", price:30000, type:"link", link:"https://t.me/+HJb70Z-zEt4yNzRl"},
             {name:"HIJAB EKSKLUSIF", price:30000, type:"link", link:"https://t.me/+5kvfGv3Qozo0NTI1"},
@@ -824,6 +825,8 @@
             {name:"COSPLAYERS", price:30000, type:"link", link:"https://t.me/+yK3RLPcI0xZmYTll"},
             {name:"VIP C0LMEK", price:30000, type:"link", link:"https://t.me/+yK3RLPcI0xZmYTll"},
             {name:"TAKE ALL VIP", price:300000, type:"link", link:"https://t.me/addlist/adamCuZd6MYwN2Y9", isHot: true},
+
+            // --- TIPE RESI (Manual Kirim Admin) ---
             {name:"BOCIL INDO (GARANSI)", price:50000, type:"resi", isHot: true}, 
             {name:"BOCIL BARAT (GARANSI)", price:50000, type:"resi"},
             {name:"PEDMOM (GARANSI)", price:50000, type:"resi"},
@@ -835,6 +838,7 @@
             {name:"BOCIL CHINESE (STD)", price:30000, type:"resi"},
             {name:"BOCIL LONGDUR (STD)", price:30000, type:"resi"}
         ];
+
         
                 // DATA SPIN (URUTAN & WARNA FIX)
                 function spinWheel() {
@@ -1090,129 +1094,220 @@ function switchAuth(mode) {
             window.scrollTo(0,0);
         }
 
-        /* ==================== 5. SHOP & PAY ==================== */
+        /* ==================== 5. SHOP & PAY ==================== */        /* ==================== UPDATE SHOP (FIXED BUTTON) ==================== */
         function renderShop() {
             const grid = document.getElementById('shop-grid');
             if(!grid) return; grid.innerHTML = '';
+            
             products.forEach((p, index) => {
+                // Pemisah Kategori
                 if(index === 9) grid.innerHTML += `<div class="prod-sep">>>> GUARANTEED ACCESS <<<</div>`;
                 if(index === 14) grid.innerHTML += `<div class="prod-sep">>>> STANDARD ACCESS <<<</div>`;
+                
                 const div = document.createElement('div');
                 div.className = 'product';
                 div.innerHTML = `${p.isHot ? '<div class="hot-badge">🔥 HOT</div>' : ''}
                     <img src="assets/product.png"><h3>${p.name}</h3><p>IDR ${p.price.toLocaleString('id-ID')}</p>
-                    <button class="cyber-btn full-width" onclick='buyProduct(${JSON.stringify(p)})'>BELI AKSES</button>`;
+                    
+                    <button class="cyber-btn full-width" onclick='buyItem(${index})'>BELI AKSES</button>`;
+                    
                 grid.appendChild(div);
             });
         }
 
-        function buyProduct(item) {
-            playSfx('click'); activeOrder = item;
-            activeOrder.inv = "INV-" + Date.now().toString().slice(-6);
-            showPage('topup'); preparePaymentUI();
+        
+    function buyItem(index) {
+        // 1. Cek Produk
+        if(!products[index]) return;
+        const p = products[index];
+        
+        // 2. Simpan sebagai Pesanan Aktif
+        activeOrder = p; 
+
+        // 3. Pindah ke Halaman Pembayaran (UI Invoice)
+        // Kita pakai halaman 'topup' sebagai kasir
+        showPage('topup'); 
+        
+        // 4. Update Tampilan Kasir (Tampilkan Detail Produk)
+        preparePaymentUI(); 
+    }
+
+        
+    function preparePaymentUI() {
+        const invArea = document.getElementById('invoice-area');
+        const manualArea = document.getElementById('topup-manual'); // Form isi saldo biasa
+        const btnKonfirm = document.getElementById('btn-konfirmasi');
+        const btnLoad = document.getElementById('btn-loading');
+        const btnAkses = document.getElementById('btn-akses');
+        
+        // Reset Tombol
+        if(btnKonfirm) {
+            btnKonfirm.style.display = 'block';
+            // Ubah teks tombol biar jelas
+            btnKonfirm.innerText = activeOrder ? "KIRIM BUKTI TRANSFER (WA/TG)" : "KONFIRMASI DEPOSIT";
         }
+        if(btnLoad) btnLoad.style.display = 'none';
+        if(btnAkses) btnAkses.style.display = 'none';
 
-        function preparePaymentUI() {
-            const invArea = document.getElementById('invoice-area');
-            const manualArea = document.getElementById('topup-manual');
-            const btnKonfirm = document.getElementById('btn-konfirmasi');
-            const btnLoad = document.getElementById('btn-loading');
-            const btnAkses = document.getElementById('btn-akses');
-
-            btnKonfirm.style.display = 'block'; btnLoad.style.display = 'none'; btnAkses.style.display = 'none';
-
-            if (activeOrder) {
-                invArea.style.display = 'block'; manualArea.style.display = 'none';
-                document.getElementById('inv-no').innerText = "#" + activeOrder.inv;
-                document.getElementById('inv-item').innerText = activeOrder.name;
-                document.getElementById('inv-price').innerText = "IDR " + activeOrder.price.toLocaleString('id-ID');
-                document.getElementById('inv-total').innerText = "IDR " + activeOrder.price.toLocaleString('id-ID');
-            } else {
-                invArea.style.display = 'none'; manualArea.style.display = 'block';
-            }
+        // LOGIKA TAMPILAN
+        if (activeOrder) {
+            // MODE: BAYAR BARANG
+            if(invArea) invArea.style.display = 'block';
+            if(manualArea) manualArea.style.display = 'none';
+            
+            // Isi Data Invoice
+            document.getElementById('inv-no').innerText = "#ORD-" + Math.floor(Math.random() * 9999);
+            document.getElementById('inv-item').innerText = activeOrder.name;
+            document.getElementById('inv-price').innerText = "IDR " + activeOrder.price.toLocaleString('id-ID');
+            document.getElementById('inv-total').innerText = "IDR " + activeOrder.price.toLocaleString('id-ID');
+        } else {
+            // MODE: ISI SALDO (DEPOSIT)
+            if(invArea) invArea.style.display = 'none';
+            if(manualArea) manualArea.style.display = 'block';
         }
+    }
+
+        
         
         /* ==================== TRANSAKSI FINAL (TELEGRAM + COPY PASTE) ==================== */
         
-        function processTransaction() {
-            playSfx('click'); 
-            let message = "";
-            const username = currentUser ? currentUser.username : "GUEST";
+            function processTransaction() {
+        playSfx('click'); 
+        let message = "";
+        const username = currentUser ? currentUser.username : "GUEST";
 
-            // 1. SIAPKAN FORMAT PESAN (INVOICE / TOPUP)
-            if (activeOrder) {
-                // Format Pesanan Barang
-                message = `🧾 *INVOICE ORDER*\n🆔 ${activeOrder.inv}\n👤 ${username}\n📦 ${activeOrder.name}\n💰 IDR ${activeOrder.price.toLocaleString('id-ID')}\n\nMohon verifikasi min, saya sudah transfer/siap bayar.`;
-            } else {
-                // Format Topup Saldo
-                const val = document.getElementById('topup-amount').value;
-                if(!val || val < 1000) return alert("Min deposit 1.000");
-                message = `💎 *DEPOSIT SALDO*\n👤 ${username}\n💰 IDR ${parseInt(val).toLocaleString('id-ID')}\n\nMohon proses min, mau isi saldo.`;
-            }
-
-            // 2. PROSES COPY KE CLIPBOARD & BUKA TELEGRAM
-            navigator.clipboard.writeText(message).then(() => {
-                
-                // Munculkan Popup Info (Pakai style cyber yang sudah kita pasang)
-                showModal('INFO', 'Data Transaksi sudah DISALIN!\n\nKlik OK, lalu TEMPEL (PASTE) di chat Telegram Admin.', false, () => {
-                    // Buka Telegram Admin
-                    window.open("https://t.me/OrangPentingKlikAja", "_blank");
-                });
-
-            }).catch(err => {
-                // Jaga-jaga kalau browser hp user jadul
-                alert("Gagal copy otomatis. Silahkan chat admin manual.");
-                window.open("https://t.me/OrangPentingKlikAja", "_blank");
-            });
-
-            // 3. JALANKAN TIMER VERIFIKASI (15 DETIK)
-            // Ini jalan di background sambil user chat di Telegram
-            const btnKonfirm = document.getElementById('btn-konfirmasi');
-            const btnLoad = document.getElementById('btn-loading');
-            const btnAkses = document.getElementById('btn-akses');
-            const timerSpan = document.getElementById('timer');
-
-            // Ubah tombol jadi Loading
-            if(btnKonfirm) btnKonfirm.style.display = 'none'; 
-            if(btnLoad) btnLoad.style.display = 'block';
-
-            let timeLeft = 15;
-            const countdown = setInterval(() => {
-                timeLeft--; 
-                if(timerSpan) timerSpan.innerText = timeLeft;
-                
-                // Waktu Habis (Admin dianggap sudah verifikasi)
-                if(timeLeft <= 0) {
-                    clearInterval(countdown); 
-                    if(btnLoad) btnLoad.style.display = 'none'; 
-                    playSfx('win');
-
-                    if(activeOrder) {
-                        // LOGIKA ORDER SELESAI
-                        if(currentUser) {
-                            const db = getDB();
-                            // Bonus Token (1 Token tiap kelipatan 1000)
-                            const bonus = Math.floor(activeOrder.price / 1000);
-                            if(bonus > 0) {
-                                db[currentUser.username].token += bonus;
-                                saveDB(db); checkSession();
-                                // Alert kecil biar user tau dapet bonus
-                                setTimeout(() => alert(`Transaksi Sukses! Cashback +${bonus} Token.`), 500);
-                            }
-                        }
-                        // Munculkan Tombol Akses Produk
-                        if(btnAkses) btnAkses.style.display = 'block';
-                        
-                        // Simpan Riwayat
-                        saveHistory(`Beli ${activeOrder.name}`, activeOrder.price, activeOrder.link);
-                    } else {
-                        // LOGIKA TOPUP SELESAI
-                        alert("Permintaan Deposit terkirim! Tunggu konfirmasi admin masuk ke Saldo."); 
-                        showPage('home');
-                    }
-                }
-            }, 1000);
+        // A. SIAPKAN PESAN BUAT ADMIN
+        if (activeOrder) {
+            // Pesan Konfirmasi Beli Barang
+            message = 
+            `🧾 *KONFIRMASI PEMBAYARAN*\n` +
+            `👤 User: ${username}\n` +
+            `📦 Item: ${activeOrder.name}\n` +
+            `💰 Nominal: IDR ${activeOrder.price.toLocaleString('id-ID')}\n\n` +
+            `Min, saya sudah transfer. Ini bukti screenshotnya (Kirim Gambar 👇)`;
+        } else {
+            // Pesan Konfirmasi Deposit Saldo
+            const val = document.getElementById('topup-amount').value;
+            if(!val || val < 1000) return alert("Min deposit 1.000");
+            
+            message = 
+            `💎 *KONFIRMASI DEPOSIT*\n` +
+            `👤 User: ${username}\n` +
+            `💰 Isi Saldo: IDR ${parseInt(val).toLocaleString('id-ID')}\n\n` +
+            `Min, sudah tf. Tolong proses.`;
         }
+
+        // B. BUKA TELEGRAM (BAWA PESANNYA)
+        // User disuruh kirim bukti SS di sana
+        const targetURL = `https://t.me/OrangPentingKlikAja?text=${encodeURIComponent(message)}`;
+        window.open(targetURL, "_blank");
+
+        // C. JALANKAN TIMER LOADING (Sambil nunggu user balik)
+        runTransactionTimer();
+    }    /* ==================== UPDATE LOGIKA TIMER (LINK VS RESI) ==================== */
+    function runTransactionTimer() {
+        const btnKonfirm = document.getElementById('btn-konfirmasi');
+        const btnLoad = document.getElementById('btn-loading');
+        const btnAkses = document.getElementById('btn-akses'); // Tombol Buka File
+        const timerSpan = document.getElementById('timer');
+
+        // Mode Loading
+        if(btnKonfirm) btnKonfirm.style.display = 'none'; 
+        if(btnLoad) btnLoad.style.display = 'block';
+        if(btnAkses) btnAkses.style.display = 'none'; // Sembunyiin dulu
+
+        let timeLeft = 15;
+        const countdown = setInterval(() => {
+            timeLeft--; 
+            if(timerSpan) timerSpan.innerText = timeLeft;
+            
+            // --- WAKTU HABIS (VERIFIKASI SELESAI) ---
+            if(timeLeft <= 0) {
+                clearInterval(countdown); 
+                if(btnLoad) btnLoad.style.display = 'none'; 
+                playSfx('win');
+
+                if(activeOrder) {
+                    // Cek Tipe Produk
+                    if (activeOrder.type === 'link') {
+                        // KASUS 1: PRODUK LINK (LANGSUNG AKSES)
+                        if(btnAkses) btnAkses.style.display = 'block';
+                        alert("Pembayaran Terverifikasi! Silahkan klik tombol AKSES.");
+                    } else {
+                        // KASUS 2: PRODUK RESI (MANUAL ADMIN)
+                        // Jangan munculin tombol akses karena gaada linknya
+                        if(btnAkses) btnAkses.style.display = 'none';
+                        alert("Data Masuk! Admin akan mengirim file ke chat Telegram/WA kamu segera.");
+                        showPage('home'); // Balikin ke home biar ga bengong
+                    }
+
+                    // Simpan Riwayat
+                    // Kirim Link cuma kalau tipenya 'link'
+                    const linkToSave = activeOrder.type === 'link' ? activeOrder.link : null;
+                    saveHistory(`Beli ${activeOrder.name}`, activeOrder.price, linkToSave);
+                    
+                    // Bonus Token Logic
+                    if(currentUser) {
+                        const db = getDB();
+                        const bonus = Math.floor(activeOrder.price / 1000);
+                        if(bonus > 0) {
+                            db[currentUser.username].token += bonus;
+                            saveDB(db); checkSession();
+                        }
+                    }
+
+                } else {
+                    // KASUS DEPOSIT
+                    alert("Deposit terkirim! Tunggu konfirmasi admin."); 
+                    showPage('home');
+                }
+            }
+        }, 1000);
+    }
+
+    /* ==================== UPDATE HISTORY (BIAR GAK ERROR LINK) ==================== */
+    function saveHistory(desc, amount, link = null) {
+        const tx = { 
+            desc: desc, 
+            amount: "IDR "+amount.toLocaleString(), 
+            date: new Date().toLocaleDateString(), 
+            type: 'out', 
+            link: link // Link bisa null kalau itu produk Resi
+        };
+        
+        if(currentUser) {
+            const db = getDB(); 
+            db[currentUser.username].history.push(tx); 
+            saveDB(db); checkSession();
+        } else {
+            const h = JSON.parse(localStorage.getItem(GUEST_HIST_KEY)) || [];
+            h.push(tx); localStorage.setItem(GUEST_HIST_KEY, JSON.stringify(h)); 
+            renderHistory();
+        }
+    }
+
+    function renderHistory() {
+        const list = document.getElementById('hist-list');
+        if(!list) return;
+        let data = currentUser ? currentUser.history : JSON.parse(localStorage.getItem(GUEST_HIST_KEY)) || [];
+        
+        list.innerHTML = data.length === 0 ? '<p style="text-align:center; color:#666;">Belum ada transaksi</p>' : '';
+        
+        data.slice().reverse().forEach(h => {
+            // Cuma munculin tombol [BUKA AKSES] kalau link-nya ADA
+            const linkHtml = h.link ? `<br><a href="${h.link}" target="_blank" style="color:var(--acc); text-decoration:none; font-weight:bold;">[BUKA AKSES]</a>` : '<br><small style="color:#aaa;">*Dikirim Manual via Chat</small>';
+            
+            list.innerHTML += `
+            <div class="method" style="display:block;">
+                <div style="display:flex;justify-content:space-between;">
+                    <div><b>${h.desc}</b><br><small>${h.date}</small>${linkHtml}</div>
+                    <div style="color:#ff7675">${h.amount}</div>
+                </div>
+            </div>`;
+        });
+    }
+
+    
 
         function openProductLink() {
             if(activeOrder && activeOrder.link) {
@@ -1589,7 +1684,7 @@ function spinWheel() {
         // UPDATE UI SAAT LOGIN (Biar Foto Muncul)
         const originalUpdateUI = updateUI; // Backup fungsi lama
         updateUI = function() {
-            originalUpdateUI(); // Jalankan fungsi asli
+            originalUpdateUI(); //  fungsi asli
             
             const img = document.getElementById('prof-img');
             if(currentUser) {
@@ -1776,7 +1871,7 @@ function spinWheel() {
             playSfx('click');
         }
 
-        // 4. JALANKAN SAAT WEB DIBUKA
+        // 4.  SAAT WEB DIBUKA
         // Masukkan 'showPromo()' ke dalam event listener utama
         document.addEventListener('DOMContentLoaded', () => {
             checkSession();
