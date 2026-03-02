@@ -182,41 +182,66 @@
             filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5));
         }
 
-        /* PENGATURAN TEKS DALAM RODA (PENTING BIAR GAK HILANG) */
-        .wheel-text {
-            position: absolute;
-            top: 0; left: 50%;
-            width: 50%; height: 50%;
-            transform-origin: 0% 100%; /* Titik putar di tengah roda */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding-left: 20px;
-        }
-
-        .wheel-in {
-            color: #fff;
-            font-size: 0.7rem;
-            font-weight: bold;
-            text-align: center;
-            transform: rotate(90deg); /* Text Tegak */
-            text-shadow: 1px 1px 2px #000;
-        }
-
   
 
-        /* PROFILE */
-        .prof-card { background: linear-gradient(160deg, #1e2029, #0f1014); padding: 25px; border-radius: 20px; text-align: center; border: 1px solid rgba(0,206,201,0.2); margin-bottom: 20px; }
-        .        /* UPDATE STYLE AVATAR */
-        .avt { 
-            width: 80px; height: 80px; 
-            margin: 0 auto 15px; 
-            border-radius: 50%; 
-            border: 2px solid var(--acc); 
-            box-shadow: 0 0 15px rgba(0,206,201,0.3);
-            background: #000;
+        /* ==================== NEXUS PROFILE & HISTORY UI ==================== */
+        .profile-nexus {
+            background: linear-gradient(145deg, #1a0b0c, #0f0505);
+            border: 1px solid #d63031;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(214, 48, 49, 0.15);
         }
-        .avt:hover #edit-overlay { display: block !important; }
+        
+        /* Header Profil Ramping & Responsif */
+        .prof-header {
+            display: flex; align-items: center; gap: 15px; margin-bottom: 20px;
+            padding-bottom: 15px; border-bottom: 1px dashed rgba(214, 48, 49, 0.3);
+        }
+        .prof-avatar-box {
+            position: relative; width: 65px; height: 65px; min-width: 65px;
+            border-radius: 50%; border: 2px solid #d63031; overflow: hidden;
+            box-shadow: 0 0 10px rgba(214, 48, 49, 0.4); cursor: pointer;
+        }
+        .prof-avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+        .prof-edit-badge {
+            position: absolute; bottom: 0; width: 100%; background: rgba(0,0,0,0.7);
+            color: #fff; font-size: 0.5rem; text-align: center; padding: 2px 0;
+            font-weight: bold; letter-spacing: 1px;
+        }
+        .prof-info { flex: 1; text-align: left; }
+        .prof-info h3 { margin: 0; font-size: 1.2rem; color: #fff; font-family: var(--font-head); }
+        .rank-badge {
+            display: inline-block; background: linear-gradient(90deg, #d63031, #b2bec3);
+            color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.6rem; 
+            font-weight: bold; margin-top: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        /* Mission / Cari Token Box */
+        .mission-box {
+            background: rgba(214, 48, 49, 0.05); border: 1px dashed #d63031;
+            border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center;
+        }
+        .mission-box h4 { color: #d63031; font-family: var(--font-head); margin-bottom: 5px; font-size: 0.9rem;}
+        
+        /* History Item Pro */
+        .hist-card {
+            display: flex; align-items: center; justify-content: space-between;
+            background: #16181e; border-left: 3px solid #d63031;
+            padding: 12px; border-radius: 8px; margin-bottom: 10px;
+            border-top: 1px solid rgba(255,255,255,0.02);
+            border-right: 1px solid rgba(255,255,255,0.02);
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+        .hist-left { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+        .hist-title { font-size: 0.8rem; font-weight: bold; color: #fff; }
+        .hist-date { font-size: 0.6rem; color: #888; font-family: monospace; }
+        .hist-right { text-align: right; }
+        .hist-amount { font-size: 0.85rem; font-weight: 900; font-family: monospace; }
+        .amount-min { color: #ff7675; } /* Merah kalau ngeluarin duit/token */
+        .amount-plus { color: #55efc4; } /* Hijau kalau dapet */
+
 
         
         /* ==================== SLIDER (16:9 FIX) ==================== */
@@ -381,28 +406,27 @@
 
 
 
-/* ==================== FIX TAMPILAN RODA ==================== */
-.wheel-text { 
-    position: absolute; 
-    top: 0; 
-    left: 50%;          /* Mulai dari tengah horizontal */
-    width: 50%;         /* Lebar setengah lingkaran */
-    height: 50%;        /* Tinggi setengah lingkaran */
-    transform-origin: 0% 100%; /* TITIK PUTAR DI TENGAH RODA (WAJIB) */
-    display: flex;
-    align-items: center; 
-    justify-content: center;
-    padding-left: 30px; /* Jarak teks dari pusat roda */
-}
+        /* ==================== FIX TAMPILAN RODA (AKURAT) ==================== */
+        .wheel-text {
+            position: absolute;
+            top: 0; left: 50%;
+            width: 80px; /* Lebar area teks */
+            margin-left: -40px; /* Geser persis ke tengah poros */
+            height: 50%; /* Jarak dari tengah roda ke atas */
+            transform-origin: bottom center; /* KUNCI: Titik putar di tengah roda bawah */
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: flex-start;
+            padding-top: 15px; /* Jarak teks dari pinggir roda */
+            z-index: 2;
+        }
 
-.wheel-in { 
-    color: #fff; 
-    font-size: 0.75rem; 
-    font-weight: bold; 
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.8); 
-    text-align: center;
-    transform: rotate(90deg); /* Putar teks biar lurus */
-}
+        .wheel-in {
+            color: #fff; font-size: 0.65rem; font-weight: 900;
+            text-align: center; line-height: 1.2;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+            /* Tidak perlu di-rotate 90deg lagi karena posisinya sudah benar menjulur ke luar */
+        }
+
 
         /* ==================== PROMO POPUP STYLE ==================== */
         .ad-overlay {
@@ -565,13 +589,18 @@
                     <i class="fas fa-sign-out-alt"></i> LOGOUT
                 </button>
             </div>
-
-            <div style="margin-top:20px; border-top:1px solid #333; padding-top:20px;">
+            
+                        <div style="margin-top:20px; border-top:1px solid #333; padding-top:20px;">
                 <p class="sb-label">EXTRAS</p>
-                <button onclick="redeemCode()" class="cyber-btn full-width" style="margin-bottom:10px; border:1px solid #a29bfe; color:#a29bfe;">
-                    <i class="fas fa-ticket-alt"></i> REDEEM CHANEL VIP
+                <button onclick="showPage('exchange'); toggleSidebar(false);" class="cyber-btn full-width" style="margin-bottom:10px; background: rgba(241, 196, 15, 0.15); border:1px solid #f1c40f; color:#f1c40f;">
+                    <i class="fas fa-exchange-alt"></i> TUKAR TOKEN (VIP FREE)
+                </button>
+
+                <button onclick="redeemCode()" class="cyber-btn full-width" style="margin-bottom:10px; border:1px solid #a29bfe; color:#a29bfe; background: transparent;">
+                    <i class="fas fa-ticket-alt"></i> REDEEM CODE
                 </button>
             </div>
+
 
                        <div style="margin-top:10px; border-top:1px solid #333; padding-top:20px;">
                 <p class="sb-label">CONTACT</p>
@@ -652,13 +681,8 @@
             <div style="text-align:center; margin-bottom:20px;">
                 <h2 style="font-family:var(--font-head);">WELCOME, <span id="disp-name" style="color:var(--acc)">GUEST</span></h2>
                 <div style="background:var(--card); padding:15px; border-radius:10px; margin-top:15px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                        <span>MISI SHARE</span>
-                        <span style="color:#f1c40f;">+50 TKN</span>
-                    </div>
-                    <div style="background:#333; height:5px; border-radius:5px; margin-bottom:10px;"><div id="share-bar" style="width:0%; height:100%; background:var(--acc);"></div></div>
-                    <button onclick="executeShareTask()" class="cyber-btn full-width">SHARE SEKARANG</button>
-                </div>
+
+
             </div>
                         <div class="comments-section">
                 <div class="comments-header">
@@ -679,23 +703,30 @@
             <div class="product-grid" id="shop-grid"></div>
         </section>
 
-                                <section id="spin" class="page">
-            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px;">CYBER SPIN</h2>
+        <section id="exchange" class="page">
+            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px; color:#f1c40f;">VIP TOKEN EXCHANGE</h2>
+            <div class="product-grid" id="exchange-grid"></div>
+        </section>
+
+        <section id="spin" class="page">
+            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px;">SPIN CHANNEL VIP</h2>
             
             <div class="gacha-container" style="min-height:300px; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-                <i class="fas fa-rocket" style="font-size:4rem; color:var(--acc); margin-bottom:20px; filter:drop-shadow(0 0 10px var(--acc));"></i>
+                <div class="wheel-pointer"></div>
+                <div class="wheel-wrapper">
+                    <div id="wheel" class="wheel"></div>
+                </div>
+                <div id="spin-res" style="text-align:center; margin-top:20px; font-weight:bold; height:20px; font-size:1.1rem;"></div>
                 
-                <h3 style="color:#fff; font-family:var(--font-head); letter-spacing:2px;">COMING SOON</h3>
-                
-                <p style="color:#aaa; font-size:0.9rem; margin-top:10px; max-width:80%;">
-                    Fitur Spin sedang dalam perbaikan sistem untuk hadiah yang lebih besar. Tunggu update selanjutnya!
-                </p>
-                
-                <button onclick="showPage('shop')" class="cyber-btn glow" style="margin-top:25px; width:auto; padding:10px 30px;">
-                    LANJUT BELANJA
-                </button>
+                <p style="color:#aaa; font-size:0.8rem; margin-top:15px; text-align:center;">Makin tinggi taruhan, makin besar peluang dapat item Hot & VIP!</p>
+                <div style="display:flex; gap:10px; margin-top:10px; width: 100%;">
+                    <button onclick="spinWheel(700)" class="cyber-btn full-width glow" style="font-size:0.75rem; padding:10px;">LITE<br>(Rp 700)</button>
+                    <button onclick="spinWheel(2000)" class="cyber-btn full-width" style="background:#e67e22; font-size:0.75rem; padding:10px;">PRO<br>(Rp 2.000)</button>
+                    <button onclick="spinWheel(5000)" class="cyber-btn full-width" style="background:#d63031; font-size:0.75rem; padding:10px;">VIP<br>(Rp 5.000)</button>
+                </div>
             </div>
         </section>
+
 
 
 
@@ -742,20 +773,25 @@
         </section>
 
         <section id="profile" class="page">
-            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px;">AGENT PROFILE</h2>
+            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px; color:#d63031;">SANG DERMAWAN DASHBOARD</h2>
             
-            <div class="prof-card">
-                <div class="avt" onclick="triggerUpload()" style="cursor:pointer; position:relative; overflow:hidden;">
-                    <img id="prof-img" src="https://ui-avatars.com/api/?name=Guest&background=333&color=fff" style="width:100%; height:100%; object-fit:cover;">
-                    <div id="edit-overlay" style="position:absolute; bottom:0; width:100%; background:rgba(0,0,0,0.6); font-size:0.6rem; color:#fff; display:none; text-align:center;">UBAH</div>
+            <div class="profile-nexus">
+                <div class="prof-header">
+                    <div class="prof-avatar-box" onclick="triggerUpload()">
+                        <img id="prof-img" src="https://ui-avatars.com/api/?name=Guest&background=333&color=fff">
+                        <div class="prof-edit-badge">UBAH</div>
+                    </div>
+                    <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleAvatarUpload(this)">
+                    
+                    <div class="prof-info">
+                        <h3 id="prof-name">GUEST</h3>
+                        <div class="rank-badge"><i class="fas fa-star"></i> AGENT TIER 1</div>
+                    </div>
                 </div>
-                <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleAvatarUpload(this)">
-                
-                <h3 id="prof-name" style="margin-bottom:20px; font-size:1.3rem;">GUEST</h3>
 
-                <div class="wallet-grid">
-                    <div class="wallet-item saldo">
-                        <div class="icon-box"><i class="fas fa-wallet"></i></div>
+                <div class="wallet-grid" style="margin-bottom: 15px;">
+                    <div class="wallet-item saldo" style="border-bottom-color: #d63031;">
+                        <div class="icon-box" style="color:#d63031; text-shadow:none;"><i class="fas fa-wallet"></i></div>
                         <div class="info-box">
                             <span class="label">TOTAL SALDO</span>
                             <h4 id="prof-saldo">IDR 0</h4>
@@ -772,9 +808,23 @@
                 </div>
             </div>
 
-            <h3 style="border-left:3px solid var(--acc); padding-left:10px; margin:25px 0 15px;">RIWAYAT</h3>
+            <div class="mission-box">
+                <h4><i class="fas fa-crosshairs"></i> MISSION CENTER</h4>
+                <p style="font-size:0.7rem; color:#aaa; margin-bottom:10px;">Selesaikan misi harian untuk mendapatkan Token gratis!</p>
+                <div style="display:flex; gap:10px;">
+                    <button class="cyber-btn full-width" style="background:#2d3436; font-size:0.7rem;" onclick="alert('Fitur Daily Login segera hadir!')"><i class="fas fa-calendar-check"></i> CHECK-IN</button>
+                    <button class="cyber-btn full-width" style="background: linear-gradient(135deg, #d63031, #e84393); font-size:0.7rem;" onclick="executeShareTask()"><i class="fas fa-share-alt"></i> SHARE (+50)</button>
+                </div>
+            </div>
+
+            <h3 style="border-left:3px solid #d63031; padding-left:10px; margin:25px 0 15px; font-family:var(--font-head);">TRANSACTION HISTORY</h3>
             <div id="hist-list"></div>
+
+            <div style="text-align:center; margin-top:40px; color:#555; font-size:0.6rem; letter-spacing: 1px;">
+                &copy; ©SANG DERMAWAN
+            </div>
         </section>
+
 
 
     </main>
@@ -817,26 +867,26 @@
                 const products = [
             // --- TIPE LINK (Auto Akses) ---
             {name:"SUPERGRUP VIP", price:50000, type:"link", link:"https://t.me/+XTHT-nfZ1c9hZDRl", isHot: true}, 
-            {name:"STW PREMIUM", price:30000, type:"link", link:"https://t.me/+HJb70Z-zEt4yNzRl"},
-            {name:"HIJAB EKSKLUSIF", price:30000, type:"link", link:"https://t.me/+5kvfGv3Qozo0NTI1"},
-            {name:"ABG INDO", price:30000, type:"link", link:"https://t.me/+Dpl0nfrJyLowYTk1"},
+            {name:"ST PREMIUM", price:30000, type:"link", link:"https://t.me/+HJb70Z-zEt4yNzRl"},
+            {name:"Hjb EKSKLUSIF", price:30000, type:"link", link:"https://t.me/+5kvfGv3Qozo0NTI1"},
+            {name:"AB INDO", price:30000, type:"link", link:"https://t.me/+Dpl0nfrJyLowYTk1"},
             {name:"TALENT INDO", price:30000, type:"link", link:"https://t.me/+g26TeYwkMjM2ZTBl"},
-            {name:"BLOWJOB/KULUM", price:30000, type:"link", link:"https://t.me/+iukHyeiHEq1kODc1"},
+            {name:"BLO", price:30000, type:"link", link:"https://t.me/+iukHyeiHEq1kODc1"},
             {name:"COSPLAYERS", price:30000, type:"link", link:"https://t.me/+yK3RLPcI0xZmYTll"},
-            {name:"VIP C0LMEK", price:30000, type:"link", link:"https://t.me/+yK3RLPcI0xZmYTll"},
+            {name:"VIP MEK", price:30000, type:"link", link:"https://t.me/+yK3RLPcI0xZmYTll"},
             {name:"TAKE ALL VIP", price:300000, type:"link", link:"https://t.me/addlist/adamCuZd6MYwN2Y9", isHot: true},
 
             // --- TIPE RESI (Manual Kirim Admin) ---
-            {name:"BOCIL INDO (GARANSI)", price:50000, type:"resi", isHot: true}, 
-            {name:"BOCIL BARAT (GARANSI)", price:50000, type:"resi"},
-            {name:"PEDMOM (GARANSI)", price:50000, type:"resi"},
-            {name:"BOCIL CHINESE (GARANSI)", price:50000, type:"resi"},
-            {name:"BOCIL LONGDUR (GARANSI)", price:50000, type:"resi"},
-            {name:"BOCIL INDO (STD)", price:30000, type:"resi"},
-            {name:"BOCIL BARAT (STD)", price:30000, type:"resi"},
+            {name:"IL INDO (GARANSI)", price:50000, type:"resi", isHot: true}, 
+            {name:"IL BARAT (GARANSI)", price:50000, type:"resi"},
+            {name:"PEDM (GARANSI)", price:50000, type:"resi"},
+            {name:"IL CHINESE (GARANSI)", price:50000, type:"resi"},
+            {name:"IL LONGDUR (GARANSI)", price:50000, type:"resi"},
+            {name:"IL INDO (STD)", price:30000, type:"resi"},
+            {name:"IL BARAT (STD)", price:30000, type:"resi"},
             {name:"PEDMOM (STD)", price:30000, type:"resi"},
-            {name:"BOCIL CHINESE (STD)", price:30000, type:"resi"},
-            {name:"BOCIL LONGDUR (STD)", price:30000, type:"resi"}
+            {name:"IL CHINESE (STD)", price:30000, type:"resi"},
+            {name:"IL LONGDUR (STD)", price:30000, type:"resi"}
         ];
 
         
@@ -920,20 +970,7 @@
             }, 4000);
         }
 
-        /* ==================== 2. INIT ==================== */
-        document.addEventListener('DOMContentLoaded', () => {
-            checkSession();
-            renderShop();
-            renderWheel();
-            initSlider();
-            
-            initComments(); // <--- GANTI 'inits()' JADI INI
-            
-            if(currentUser) {
-                updateShareUI();
-                setTimeout(checkTutorial, 1500);
-            }
-        });
+  
 
 
         function playSfx(type) { if(sfx[type]) { sfx[type].currentTime = 0; sfx[type].play().catch(()=>{}); } }
@@ -1246,15 +1283,20 @@ function switchAuth(mode) {
                     const linkToSave = activeOrder.type === 'link' ? activeOrder.link : null;
                     saveHistory(`Beli ${activeOrder.name}`, activeOrder.price, linkToSave);
                     
-                    // Bonus Token Logic
+                    // Bonus Token Logic (Gacha/Random)
                     if(currentUser) {
                         const db = getDB();
-                        const bonus = Math.floor(activeOrder.price / 1000);
-                        if(bonus > 0) {
-                            db[currentUser.username].token += bonus;
-                            saveDB(db); checkSession();
-                        }
+                        // Random dapat token antara 10 sampai 150
+                        const randomBonus = Math.floor(Math.random() * 141) + 10; 
+                        db[currentUser.username].token += randomBonus;
+                        saveDB(db); checkSession();
+                        
+                        // Kasih tau user dia dapet gacha token
+                        setTimeout(() => {
+                            alert(`🎁 MANTAP! Kamu dapat bonus kaget +${randomBonus} Token dari transaksi ini.`);
+                        }, 1000); // Muncul sedetik setelah alert sukses utama
                     }
+
 
                 } else {
                     // KASUS DEPOSIT
@@ -1342,85 +1384,75 @@ function switchAuth(mode) {
         
 
 
-/* ==================== SPIN FINAL (KALIBRASI -45°) ==================== */
+/* ==================== SPIN FINAL (SALDO & PELUANG DINAMIS) ==================== */
+/* ==================== SPIN FINAL (100% SINKRONISASI) ==================== */
 
-// 1. DATA HADIAH (SUDUT SUDAH DIGESER BIAR PAS)
+// 1. DATA HADIAH (Urutan disamakan persis dengan screenshot, tanpa stopAngle manual)
 const spinPrizes = [
-    // Urutan: Merah -> Kuning -> Hitam...
-    // stopAngle sudah dikalibrasi karena laporan meleset 1 kolom
-    { label: "10 TKN", val: 10, type: "token", color: "#d63031", icon:'<i class="fas fa-gem"></i>', chance: 20, stopAngle: -67.5 },    // MERAH
-    { label: "ZONK 2", val: 0, type: "zonk", color: "#f1c40f", icon:'<i class="fas fa-bomb"></i>', chance: 30, stopAngle: -112.5 },   // KUNING
-    { label: "50 TKN", val: 50, type: "token", color: "#2d3436", icon:'<i class="fas fa-star"></i>', chance: 5, stopAngle: -157.5 },  // HITAM
-    { label: "SUPERGRUP", val: "https://t.me/+XTHT-nfZ1c9hZDRl", type: "grand", color: "#e67e22", icon:'<i class="fas fa-crown"></i>', chance: 1, stopAngle: -202.5 }, // ORANGE
-    { label: "AKUN", val: "akun", type: "grand", color: "#9b59b6", icon:'<i class="fas fa-user-astronaut"></i>', chance: 1, stopAngle: -247.5 }, // UNGU
-    { label: "500", val: 500, type: "saldo", color: "#e84393", icon:'<i class="fas fa-coins"></i>', chance: 20, stopAngle: -292.5 },  // PINK
-    { label: "1.000", val: 1000, type: "saldo", color: "#0984e3", icon:'<i class="fas fa-money-bill-wave"></i>', chance: 10, stopAngle: -337.5 }, // BIRU
-    { label: "ZONK 1", val: 0, type: "zonk", color: "#00cec9", icon:'<i class="fas fa-times-circle"></i>', chance: 30, stopAngle: -382.5 }  // CYAN
+    { label: "SUPERGRUP", val: "https://t.me/+XTHT-nfZ1c9hZDRl", type: "grand", color: "#2d3436", icon:'<i class="fas fa-crown"></i>' }, // 0: HITAM
+    { label: "50 TKN", val: 50, type: "token", color: "#e67e22", icon:'<i class="fas fa-coins"></i>' },  // 1: ORANGE
+    { label: "TAKE ALL", val: "https://t.me/addlist/adamCuZd6MYwN2Y9", type: "grand", color: "#9b59b6", icon:'<i class="fas fa-star"></i>' }, // 2: UNGU
+    { label: "100 TKN", val: 100, type: "token", color: "#e84393", icon:'<i class="fas fa-gem"></i>' },  // 3: PINK
+    { label: "ZONK", val: 0, type: "zonk", color: "#0984e3", icon:'<i class="fas fa-times-circle"></i>' }, // 4: BIRU
+    { label: "10 TKN", val: 10, type: "token", color: "#00cec9", icon:'<i class="fas fa-gem"></i>' },   // 5: CYAN
+    { label: "ZONK", val: 0, type: "zonk", color: "#d63031", icon:'<i class="fas fa-bomb"></i>' },      // 6: MERAH
+    { label: "BOCIL INDO", val: "BOCIL INDO (GARANSI)", type: "product", color: "#f1c40f", icon:'<i class="fas fa-box"></i>' } // 7: KUNING
 ];
 
-// 2. RENDER RODA (Full CSS Gradient)
-function renderWheel() {
-    const w = document.getElementById('wheel');
-    if(!w) return;
-    w.innerHTML = "";
-    
-    // Background Warna
-    let gradient = "conic-gradient(";
-    spinPrizes.forEach((p, i) => {
-        gradient += `${p.color} ${i * 12.5}% ${(i + 1) * 12.5}%,`;
-    });
-    w.style.background = gradient.slice(0, -1) + ")";
 
-    // Teks & Icon
-    spinPrizes.forEach((p, i) => {
-        // Rumus posisi text (45 derajat per slice)
-        const rotation = (i * 45) + 22.5 - 90; 
-        w.innerHTML += `
-            <div class="wheel-text" style="transform: rotate(${rotation}deg);">
-                <div class="wheel-in">
-                    ${p.icon}<br>${p.label}
-                </div>
-            </div>`;
-    });
-}
 
-// 3. FUNGSI PUTAR (SINKRONISASI TOTAL)
-function spinWheel() {
-    const COST = 10;
-    
+// 3. FUNGSI PUTAR (DENGAN RUMUS KALIBRASI OTOMATIS)
+function spinWheel(cost) {
     if(!currentUser) return openAuthModal('login');
-    if(currentUser.token < COST) return alert(`Token kurang! Sisa: ${currentUser.token}`);
-    if(!confirm(`Putar Spin? (-${COST} Token)`)) return;
+    if(currentUser.saldo < cost) return alert(`Saldo tidak cukup! Butuh Rp ${cost.toLocaleString('id-ID')}`);
+    if(isSpinning) return;
+    if(!confirm(`Putar Spin seharga Rp ${cost.toLocaleString('id-ID')}?`)) return;
 
-    // Potong Token
+    // Potong Saldo
     const db = getDB(); 
-    db[currentUser.username].token -= COST; 
+    db[currentUser.username].saldo -= cost; 
     saveDB(db); checkSession();
 
     playSfx('spin');
     const w = document.getElementById('wheel');
     const res = document.getElementById('spin-res'); 
     res.innerHTML = "MENCARI HOKI...";
+    isSpinning = true;
     
-    // Logic Random (Weighted)
-    let totalChance = 0;
-    spinPrizes.forEach(p => totalChance += p.chance);
+    // LOGIKA PELUANG (Berdasarkan Array Baru)
+    let chances = [];
+    if(cost === 700) {
+        // [0:SUPER, 1:50T, 2:TAKE, 3:100T, 4:ZONK, 5:10T, 6:ZONK, 7:BOCIL]
+        chances = [0.1, 15, 0.1, 4.8, 30, 15, 30, 5]; 
+    } else if(cost === 2000) {
+        chances = [1, 20, 1, 18, 15, 15, 15, 15]; 
+    } else if(cost === 5000) {
+        chances = [4, 25, 4, 27, 5, 5, 5, 25]; 
+    }
+
+    // Cari Pemenang
+    let totalChance = chances.reduce((a, b) => a + b, 0);
     let random = Math.random() * totalChance;
     let idx = 0;
-    for(let i = 0; i < spinPrizes.length; i++) {
-        random -= spinPrizes[i].chance;
+    for(let i = 0; i < chances.length; i++) {
+        random -= chances[i];
         if(random <= 0) { idx = i; break; }
     }
     const win = spinPrizes[idx];
 
-    // Putar Roda (3600 derajat + Sudut Kunci)
-    const targetRotation = 3600 + win.stopAngle;
+    // RUMUS MATEMATIKA SINKRONISASI (DIJAMIN 100% AKURAT)
+    const sliceDeg = 360 / spinPrizes.length; // Tiap slice 45 derajat
+    // Putar 10x penuh (3600 derajat), lalu kurangi sudutnya supaya pas di tengah slice index yang menang
+    const targetRotation = 3600 - ((idx * sliceDeg) + (sliceDeg / 2));
+    
+    // Animasi Roda
     w.style.transform = `rotate(${targetRotation}deg)`;
     
-    // Hasil Berhenti
     setTimeout(() => {
         w.style.transition = 'none'; 
-        w.style.transform = `rotate(${win.stopAngle}deg)`;
+        // Reset putaran biar putaran selanjutnya gak ngelilit
+        w.style.transform = `rotate(${targetRotation % 360}deg)`; 
+        isSpinning = false;
         
         if(win.type === 'zonk') {
             res.innerHTML = `<span style="color:#ff7675">ZONK! 🤣</span>`;
@@ -1429,16 +1461,12 @@ function spinWheel() {
             res.innerHTML = `<span style="color:var(--acc)">WIN: ${win.label}</span>`;
             
             if(win.type === 'grand') {
-                 if(win.label === "SUPERGRUP") {
-                    saveHistory(`JACKPOT: ${win.label}`, 0, win.val);
-                    alert(`JACKPOT!! 🎉 Link Akses masuk ke RIWAYAT.`);
-                } else {
-                    alert(`JACKPOT ${win.label}! Lapor Admin.`);
-                }
+                saveHistory(`JACKPOT SPIN: ${win.label}`, 0, win.val);
+                alert(`JACKPOT!! 🎉 Link Akses ${win.label} masuk ke RIWAYAT AKUN.`);
             } 
-            else if(win.type === 'saldo') {
-                db[currentUser.username].saldo += win.val;
-                alert(`Selamat! Saldo +${win.val}`);
+            else if(win.type === 'product') {
+                saveHistory(`SPIN WIN: ${win.val}`, 0, null);
+                alert(`MANTAP! Kamu dapat ${win.val}. Screenshot dan hubungi Admin via Telegram untuk klaim.`);
             }
             else if(win.type === 'token') {
                 db[currentUser.username].token += win.val;
@@ -1447,9 +1475,112 @@ function spinWheel() {
             saveDB(db); checkSession();
         }
         
+        // Kembalikan efek transisi untuk putaran berikutnya
         setTimeout(() => { w.style.transition = '4s cubic-bezier(0.15,0,0.15,1)'; }, 100);
     }, 4000);
 }
+
+
+// ==================== UPDATE RODA SPIN (SIMPEL & PRESISI) ====================
+function renderWheel() {
+    const w = document.getElementById('wheel');
+    if(!w) return;
+    w.innerHTML = "";
+    
+    let gradient = "conic-gradient(from 0deg, ";
+    spinPrizes.forEach((p, i) => {
+        gradient += `${p.color} ${i * 45}deg ${(i + 1) * 45}deg,`;
+    });
+    w.style.background = gradient.slice(0, -1) + ")";
+
+    spinPrizes.forEach((p, i) => {
+        // Tepat di tengah potongan (45 derajat per potong)
+        const centerAngle = (i * 45) + 22.5; 
+        w.innerHTML += `
+            <div class="wheel-text" style="transform: rotate(${centerAngle}deg);">
+                <div class="wheel-in">${p.icon}<br>${p.label}</div>
+            </div>`;
+    });
+}
+
+// ==================== SISTEM TUKAR TOKEN (VIP FREE 1 - 5) ====================
+const vipFreeData = [
+    {
+        name: "VIP FREE 1 (STARTER)", 
+        desc: "Akses 1 Channel Standard",
+        cost: 3000, 
+        link: "https://t.me/+LinkVip1" // Ganti link channelnya
+    },
+    {
+        name: "VIP FREE 2 (PRO)", 
+        desc: "Akses 1 Channel Garansi/Eksklusif",
+        cost: 5000, 
+        link: "https://t.me/+LinkVip2"
+    },
+    {
+        name: "VIP FREE 3 (ELITE)", 
+        desc: "Akses 2 Channel Eksklusif",
+        cost: 10000, 
+        link: "https://t.me/+LinkVip3"
+    },
+    {
+        name: "VIP FREE 4 (MASTER)", 
+        desc: "Akses 4 Channel Premium",
+        cost: 20000, 
+        link: "https://t.me/+LinkVip4"
+    },
+    {
+        name: "VIP FREE 5 (TAKE ALL)", 
+        desc: "Akses Semua Grup (Setara Rp 300k)",
+        cost: 30000, 
+        link: "https://t.me/addlist/adamCuZd6MYwN2Y9" // Udah gw pasin sama link Take All
+    }
+];
+
+function renderExchange() {
+    const grid = document.getElementById('exchange-grid');
+    if(!grid) return; grid.innerHTML = '';
+    
+    vipFreeData.forEach((v, index) => {
+        // Efek warna beda khusus VIP 5 biar kelihatan mewah
+        const isMax = index === 4; 
+        const boxColor = isMax ? 'rgba(232, 67, 147, 0.1)' : 'rgba(241, 196, 15, 0.05)';
+        const borderColor = isMax ? '#e84393' : '#f1c40f';
+        const iconColor = isMax ? '#e84393' : '#f1c40f';
+
+        grid.innerHTML += `
+        <div class="product" style="border-color:${borderColor}; background: ${boxColor};">
+            <i class="fas fa-crown" style="font-size:2rem; color:${iconColor}; margin-bottom:10px; display:block;"></i>
+            <h3 style="color:${iconColor};">${v.name}</h3>
+            <p style="font-size:0.65rem; color:#aaa; margin-bottom:5px;">${v.desc}</p>
+            <p style="font-weight:bold; font-size:1.1rem; margin-bottom:10px; color:#fff;">${v.cost.toLocaleString('id-ID')} <span style="font-size:0.7rem; color:${iconColor};">TKN</span></p>
+            <button class="cyber-btn full-width" style="background:${isMax ? 'linear-gradient(135deg, #e84393, #d63031)' : '#f1c40f'}; color:${isMax ? '#fff' : '#000'};" onclick='buyVipFree(${index})'>TUKAR</button>
+        </div>`;
+    });
+}
+
+
+function buyVipFree(idx) {
+    if(!currentUser) return openAuthModal('login');
+    const v = vipFreeData[idx];
+    
+    if(currentUser.token < v.cost) {
+        playSfx('click');
+        return alert(`Token kurang bro!\nButuh: ${v.cost.toLocaleString('id-ID')} TKN\nToken kamu: ${currentUser.token.toLocaleString('id-ID')} TKN`);
+    }
+    
+    if(confirm(`Yakin tukar ${v.cost.toLocaleString('id-ID')} Token untuk akses ${v.name}?`)) {
+        const db = getDB();
+        db[currentUser.username].token -= v.cost;
+        saveDB(db); checkSession();
+        
+        saveHistory(`Tukar ${v.name}`, 0, v.link);
+        playSfx('win');
+        alert(`Berhasil! 🎉 Link Akses ${v.name} sudah ditambahkan ke menu RIWAYAT di Profil kamu.`);
+    }
+}
+
+
 
         
 
@@ -1871,22 +2002,6 @@ function spinWheel() {
             playSfx('click');
         }
 
-        // 4.  SAAT WEB DIBUKA
-        // Masukkan 'showPromo()' ke dalam event listener utama
-        document.addEventListener('DOMContentLoaded', () => {
-            checkSession();
-            renderShop();
-            renderWheel();
-            initSlider();
-            initComments();
-            
-            showPromo(); // <--- TAMBAHKAN INI BIAR MUNCUL
-            
-            if(currentUser) {
-                updateShareUI();
-                setTimeout(checkTutorial, 1500);
-            }
-        });
 
     /* ==================== FITUR PANDUAN (GLOBAL) ==================== */
     
@@ -1918,6 +2033,27 @@ function spinWheel() {
             alert(guideText); // Jaga-jaga kalau modal error, pake alert biasa
         }
     }
+
+        /* ==================== INIT WEB FINAL (MULAI SISTEM) ==================== */
+        document.addEventListener('DOMContentLoaded', () => {
+            checkSession();     // Cek login user
+            renderShop();       // Munculin produk Black Market
+            renderWheel();      // Munculin Roda Spin
+            renderExchange();   // <--- INI OBATNYA BIAR MENU TUKAR TOKEN MUNCUL!
+            initSlider();       // Jalanin Banner Geser
+            initComments();     // Jalanin Live Chat
+            
+            // Cek apakah fungsi Iklan ada, kalau ada jalankan
+            if (typeof showPromo === "function") {
+                showPromo(); 
+            }
+            
+            // Update UI khusus Member
+            if (currentUser) {
+                updateShareUI();
+                setTimeout(checkTutorial, 1500);
+            }
+        });
 
     </script>
 </body>
