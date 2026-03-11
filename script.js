@@ -233,10 +233,41 @@ function unlockTalent() {
     }
 }
 
+/* ==================== DATA & FUNGSI PROMO ==================== */
+const promoProducts = [
+    {name:"10K VIP RANDOM", price:10000, type:"resi"}, 
+    {name:"TAKE ALL VIP", price:120000, type:"link", link:"https://t.me/addlist/adamCuZd6MYwN2Y9"}, // Diskon dari 300k
+    {name:"50K BEBAS PILIH", price:50000, type:"resi"}
+];
+
+function renderPromo() {
+    const grid = document.getElementById('promo-grid'); 
+    if(!grid) return; 
+    grid.innerHTML = '';
+    
+    promoProducts.forEach((p, i) => {
+        // Efek coret khusus buat Take All VIP
+        const originalPrice = p.price === 120000 ? `<span style="text-decoration: line-through; color:#ff7675; font-size:0.65rem;">Rp 300.000</span><br>` : '';
+        
+        grid.innerHTML += `
+        <div class="product" style="border-color:#f1c40f; background: rgba(241, 196, 15, 0.05);">
+            <div class="hot-badge" style="background:#e84393; color:#fff;">PROMO</div>
+            <h3 style="color:#f1c40f;">${p.name}</h3>
+            <p style="color:#f1c40f; font-weight:900;">${originalPrice}${formatRp(p.price)}</p>
+            <button class="cyber-btn full-width" style="background: linear-gradient(135deg, #f39c12, #f1c40f); color: #000; border: none;" onclick="buyItem(${i}, 'promo')">AMBIL PROMO</button>
+        </div>`;
+    });
+}
+
 function buyItem(idx, source) {
-    activeOrder = source === 'shop' ? products[idx] : { name: `[VC] ${talents[idx].name}`, price: talents[idx].price, type: 'resi' };
+    // Cek beli darimana (Shop biasa, Promo, atau Talent)
+    if(source === 'shop') activeOrder = products[idx];
+    else if(source === 'promo') activeOrder = promoProducts[idx];
+    else activeOrder = { name: `[VC] ${talents[idx].name}`, price: talents[idx].price, type: 'resi' };
+    
     showPage('topup');
 }
+
 
 /* ==================== 6. PAYMENT, INVOICE & TIMER ==================== */
 function preparePaymentUI() {
@@ -500,14 +531,22 @@ function executeShareTask() {
     setTimeout(() => { const db=getDB(); db[currentUser.username].token += 50; saveDB(db); checkSession(); alert("Share Berhasil! +50 Token."); }, 3000);
 }
 
+/* ==================== INIT WEB FINAL ==================== */
 document.addEventListener('DOMContentLoaded', () => {
     checkSession(); 
     renderShop(); 
     renderExchange(); 
     renderWheel(); 
+    renderPromo();      // <- Render list promo
     initSlider(); 
-    initComments(); // Kunci pemanggil agar datanya muncul
+    initComments(); 
+    
+    // OBAT TIMER HILANG: Panggil render peti tiap web di-refresh!
+    if(typeof renderDailyChest === 'function') {
+        renderDailyChest(); 
+    }
 });
+
 /* ==================== 11. CUSTOMER SERVICE (CHATBOT) ==================== */
 function openCS() {
     document.getElementById('cs-overlay').classList.add('active');
