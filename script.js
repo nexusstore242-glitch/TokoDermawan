@@ -575,3 +575,103 @@ function handleCSOption(option) {
         setTimeout(showCSOptions, 600);
     }, 800); // Jeda 0.8 detik
 }
+/* ==================== 12. DAILY CHECK-IN (CHEST 24 JAM) ==================== */
+let chestTimerInterval;
+
+function renderDailyChest() {
+    const chestImg = document.getElementById('daily-chest-img');
+    const timerDiv = document.getElementById('chest-timer');
+    const glow = document.getElementById('chest-glow');
+    if(!chestImg) return;
+
+    clearInterval(chestTimerInterval); // Bersihkan timer lama
+
+    if(!currentUser) {
+        // GUEST: Peti Tertutup, Minta Login
+        chestImg.src = "chest-closed.jpg";
+        glow.style.display = "block";
+        timerDiv.style.display = "none";
+        return;
+    }
+
+    const lastClaim = currentUser.lastCheckInTime || 0; // Waktu klaim terakhir (ms)
+    const now = Date.now();
+    const twentyFourHours = 24 * 60 * 60 * 1000; // 24 Jam dalam Milidetik
+    const timeDiff = now - lastClaim;
+
+    if(timeDiff < twentyFourHours) {
+        // SUDAH KLAIM: Peti Terbuka & Timer Jalan
+        chestImg.src = "chest-open.jpg";
+        glow.style.display = "none";
+        timerDiv.style.display = "block";
+        startChestTimer(twentyFourHours - timeDiff); // Mulai hitung mundur
+    } else {
+        // BISA KLAIM: Peti Tertutup & Nyala
+        chestImg.src = "chest-closed.jpg";
+        glow.style.display = "block";
+        timerDiv.style.display = "none";
+    }
+}
+
+function startChestTimer(remainingMs) {
+    const timerDiv = document.getElementById('chest-timer');
+    let timeLeft = Math.floor(remainingMs / 1000);
+
+    chestTimerInterval = setInterval(() => {
+        if (timeLeft <= 0) {
+            clearInterval(chestTimerInterval);
+            renderDailyChest(); // Refresh otomatis kalau waktu habis
+            return;
+        }
+        
+        // Format detik menjadi Jam:Menit:Detik
+        const h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
+        const m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+        const s = (timeLeft % 60).toString().padStart(2, '0');
+        
+        timerDiv.innerText = `${h}:${m}:${s}`;
+        timeLeft--;
+    }, 1000);
+}
+
+function claimDaily() {
+    if(!currentUser) return openAuthModal('login'); // Cegah Guest
+
+    const lastClaim = currentUser.lastCheckInTime || 0;
+    const now = Date.now();
+    const twentyFourHours = 24 * 60 * 60 * 1000;
+
+    // Cegah klaim dobel (kalau belum 24 jam)
+    if(now - lastClaim < twentyFourHours) {
+        return alert("Peti sedang disiapkan!\nTunggu waktu mundur selesai ya.");
+    }
+
+    const chestImg = document.getElementById('daily-chest-img');
+    
+    // Animasi getar manual sebelum terbuka
+    chestImg.style.transform = "scale(1.1) rotate(5deg)";
+    setTimeout(() => chestImg.style.transform = "scale(1.1) rotate(-5deg)", 100);
+    setTimeout(() => chestImg.style.transform = "scale(1)", 200);
+
+    // Proses Buka Peti
+    setTimeout(() => {
+        // Gacha Token (Random 10 sampai 100)
+        const reward = Math.floor(Math.random() * 91) + 10; 
+        
+        const db = getDB();
+        db[currentUser.username].token += reward;
+        db[currentUser.username].lastCheckInTime = Date.now(); // Catat detik klaim
+        saveDB(db);
+        
+        checkSession(); // Update UI Saldo
+        playSfx('win');
+        
+        // Tampilkan Popup Keren
+        document.getElementById('reward-amount').innerText = reward;
+        document.getElementById('reward-overlay').classList.add('active');
+        
+        saveHistory("Daily Login Chest", 0, null);
+        
+        renderDailyChest(); // Ubah gambar jadi terbuka dan jalanin timer
+    }, 400);
+}
