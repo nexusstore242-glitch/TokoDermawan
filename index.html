@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sistem Nexus | VIP STORE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <audio id="sfx-click"><source src="assets/click.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-spin"><source src="assets/spin.mp3" type="audio/mpeg"></audio>
+    <audio id="sfx-win"><source src="assets/win.mp3" type="audio/mpeg"></audio>
+
+    <div id="auth-overlay" class="auth-overlay">
+        <div class="auth-box">
+            <button onclick="closeAuthModal()" style="position:absolute; top:10px; right:15px; background:none; border:none; color:#fff; font-size:1.5rem;">&times;</button>
+            <h2 style="font-family:var(--font-head); color:var(--acc);">NEXUS LOGIN</h2>
+            <div style="display:flex; margin:15px 0; border-bottom:1px solid #440000;">
+                <button onclick="switchAuth('login')" id="tab-login" style="flex:1; padding:10px; background:none; border:none; color:var(--acc); border-bottom:2px solid var(--acc);">LOGIN</button>
+                <button onclick="switchAuth('register')" id="tab-register" style="flex:1; padding:10px; background:none; border:none; color:#666;">DAFTAR</button>
+            </div>
+            <form onsubmit="handleAuth(event)">
+                <div class="input-group" id="field-user"><i class="fas fa-user"></i><input type="text" id="username" placeholder="Username" required></div>
+                <div class="input-group" id="field-pass"><i class="fas fa-lock"></i><input type="password" id="password" placeholder="Password"></div>
+                <button type="submit" class="cyber-btn full-width glow" id="auth-btn">MASUK</button>
+            </form>
+            <p id="auth-msg" style="margin-top:10px; color:#ff7675; font-size:0.8rem;"></p>
+        </div>
+    </div>
+        <div id="cs-overlay" class="auth-overlay">
+        <div class="auth-box" style="padding:0; width:95%; max-width:400px; height:80vh; max-height:600px; display:flex; flex-direction:column; overflow:hidden; border: 1px solid var(--acc);">
+            
+            <div style="background:var(--card); padding:15px; border-bottom:1px solid #440000; display:flex; justify-content:space-between; align-items:center;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    
+                    <img src="bot-cs.png" style="width:35px; height:35px; border-radius:50%; border:2px solid #00cec9; object-fit:cover;">
+                    
+                    <div style="text-align:left;">
+                        <h3 style="margin:0; font-size:1rem; color:var(--acc); font-family:var(--font-head);">CIA - S'DRMWN CS</h3>
+                        <span style="font-size:0.6rem; color:#55efc4; font-weight:bold;"><i class="fas fa-circle" style="font-size:0.4rem; animation:blink 1s infinite;"></i> Online 24/7</span>
+                    </div>
+                </div>
+                <button onclick="closeCS()" style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+
+            <div id="cs-chat-body" style="flex:1; overflow-y:auto; padding:15px; background:linear-gradient(180deg, #0a0505, #170707); display:flex; flex-direction:column; gap:10px;">
+                </div>
+
+            <div id="cs-quick-replies" style="padding:10px 15px; background:var(--card); border-top:1px solid #440000; display:flex; gap:8px; overflow-x:auto; white-space:nowrap; scrollbar-width: none;">
+                </div>
+        </div>
+    </div>
+
+
+    <button onclick="openCS()" style="position: fixed; bottom: 85px; right: 20px; width: 55px; height: 55px; border-radius: 50%; background: linear-gradient(135deg, #0984e3, #00cec9); color: #fff; border: 2px solid #00cec9; font-size: 1.5rem; box-shadow: 0 0 15px rgba(0, 206, 201, 0.4); z-index: 95; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s;">
+        <i class="fas fa-headset"></i>
+    </button>
+
+    <div id="floating-chest-container" onclick="claimDaily()" style="position: fixed; bottom: 150px; right: 18px; width: 60px; height: 60px; z-index: 95; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s;">
+        <div style="position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, rgba(241,196,15,0.6) 0%, transparent 70%); border-radius: 50%; animation: pulseGlow 2s infinite;"></div>
+        <img id="daily-chest-img" src="chest-closed.jpg" style="width: 85%; height: 85%; object-fit: contain; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8)); position: relative; z-index: 2; transition: transform 0.2s;">
+    </div>
+
+    <header>
+                <div class="head-left">
+            <div class="logo"><img src="logo.png" alt="Logo Sang Dermawan"></div>
+            <div class="title"><h1>SANG DERMAWAN</h1></div>
+        </div>
+
+                <div class="head-right">
+            <div class="chip blue" onclick="showPage('topup')">
+                <i class="fas fa-wallet"></i> 
+                <span id="header-saldo">0</span>
+                <span style="background: #ff7675; color: #170707; border-radius: 50%; width: 16px; height: 16px; display: inline-flex; justify-content: center; align-items: center; margin-left: 5px;">
+                    <i class="fas fa-plus" style="font-size: 0.55rem; font-weight: bold;"></i>
+                </span>
+            </div>
+            
+            <div class="chip gold" onclick="showPage('spin')">
+                <i class="fas fa-bolt"></i> 
+                <span id="header-token">0</span>
+            </div>
+        </div>
+
+    </header>
+
+    <nav class="bottom-nav">
+        <button onclick="showPage('home')" class="nav-btn active"><i class="fas fa-home"></i> HOME</button>
+        <button onclick="showPage('shop')" class="nav-btn"><i class="fas fa-shopping-bag"></i> MARKET</button>
+        <button onclick="showPage('talent')" class="nav-btn"><i class="fas fa-heart"></i> TALENT</button>
+        <button onclick="showPage('spin')" class="nav-btn"><i class="fas fa-dharmachakra"></i> SPIN</button>
+        <button onclick="showPage('profile')" class="nav-btn"><i class="fas fa-user"></i> AKUN</button>
+    </nav>
+
+    <main>
+        
+        <section id="home" class="page active">
+            <div class="hero-slider-container">
+                <div class="slider-wrapper" id="slider-wrapper">
+                    <div class="slide"><img src="banner1.jpg"></div>
+                    <div class="slide"><img src="banner2.jpg"></div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;">
+                <button onclick="window.open('https://t.me/+AL5W2ny2cpViYjll', '_blank')" class="cyber-btn full-width" style="font-size: 0.75rem;"><i class="fas fa-bullhorn"></i> CHANNEL UTAMA</button>
+                <button onclick="window.open('https://t.me/addlist/GIcQsI9bVG8wNDBl')" class="cyber-btn full-width" style="font-size: 0.75rem;"><i class="fas fa-bullhorn"></i> PAKET LENGKAP</button>
+                
+                <button onclick="window.open('https://t.me/+2q0JoWFkI9tkNDA1', '_blank')" class="cyber-btn full-width" style="background: #1a0b0c; border-color: #440000; font-size: 0.75rem;"><i class="fas fa-star"></i> TESTI 1</button>
+                <button onclick="window.open('https://t.me/dermawanPayment', '_blank')" class="cyber-btn full-width" style="background: #1a0b0c; border-color: #440000; font-size: 0.75rem;"><i class="fas fa-star-half-alt"></i> TESTI 2</button>
+            </div>
+            <div class="comments-section">
+                <div style="border-bottom:1px solid #440000; padding-bottom:10px; margin-bottom:10px;">
+                    <h3 style="font-family:var(--font-head); font-size:0.9rem; color:var(--acc);"><i class="fas fa-circle" style="font-size:0.5rem; animation:blink 1s infinite;"></i> LIVE CHAT</h3>
+                </div>
+                <div class="comments-list" id="com-list"></div>
+                <div style="display:flex; gap:10px; margin-top:10px; background:#000; padding:5px; border-radius:50px; border:1px solid #330000;">
+                    <input type="text" id="com-input" placeholder="Ketik pesan..." style="flex:1; background:none; border:none; color:#fff; padding:5px 15px; outline:none;" autocomplete="off">
+                    <button onclick="postComment()" style="background:var(--acc); border:none; width:35px; height:35px; border-radius:50%; color:#fff;"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </section>
+
+        <section id="shop" class="page">
+            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px; color:var(--acc);">BLACK MARKET</h2>
+            <div class="product-grid" id="shop-grid"></div>
+
+            <h2 style="text-align:center; font-family:var(--font-head); margin:30px 0 20px; color:#f1c40f;">TOKEN EXCHANGE</h2>
+            <div class="product-grid" id="exchange-grid"></div>
+        </section>
+
+        <section id="talent" class="page">
+            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px; color:var(--acc);">TALENT VCS TRUSTED</h2>
+            
+            <div id="talent-lock" style="text-align:center; padding: 40px 15px; background:var(--card); border:1px solid #440000; border-radius:15px;">
+                <i class="fas fa-lock" style="font-size:3.5rem; color:var(--acc); margin-bottom:15px; text-shadow: 0 0 15px var(--acc);"></i>
+                <h3 style="font-family:var(--font-head); letter-spacing:1px; margin-bottom:10px;">AKSES TERKUNCI</h3>
+                <p style="font-size:0.85rem; color:#aaa; margin-bottom:20px; line-height:1.5;">Buka gerbang VIP untuk melihat daftar Talent (VCS,VIDPRIP).<br>Bayar dapet bonus.</p>
+                <button class="cyber-btn full-width glow" onclick="unlockTalent()">BUKA AKSES (Rp 5.000)</button>
+            </div>
+
+            <div id="talent-content" style="display:none;">
+                <p style="text-align:center; font-size:0.8rem; color:#aaa; margin-bottom:15px;">Pilih talent favoritmu. Jadwal bisa berubah sewaktu-waktu.</p>
+                <div class="product-grid" id="talent-grid"></div>
+            </div>
+        </section>
+
+        <section id="spin" class="page">
+            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px; color:var(--acc);">CYBER SPIN</h2>
+            <div class="gacha-container">
+                <div class="wheel-pointer"></div>
+                <div class="wheel-wrapper"><div id="wheel" class="wheel"></div></div>
+                <div id="spin-res" style="text-align:center; margin-top:20px; font-weight:bold; height:20px; font-size:1.1rem;"></div>
+                
+                <p style="color:#aaa; font-size:0.75rem; margin-top:15px; text-align:center;">Makin tinggi taruhan, peluang Jackpot makin besar!</p>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button onclick="spinWheel(700)" class="cyber-btn full-width" style="font-size:0.7rem;">LITE<br>(700)</button>
+                    <button onclick="spinWheel(2000)" class="cyber-btn full-width" style="background:#e67e22; border-color:#e67e22; font-size:0.7rem;">PRO<br>(2k)</button>
+                    <button onclick="spinWheel(5000)" class="cyber-btn full-width glow" style="font-size:0.7rem;">VIP<br>(5k)</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="topup" class="page">
+            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px; color:var(--acc);">CASHIER</h2>
+            
+            <div id="invoice-area" style="display:none; background:#fff; color:#000; padding:15px; border-radius:10px; border-top:5px solid var(--acc); margin-bottom:15px; font-family:monospace; box-shadow: 0 5px 15px rgba(0,0,0,0.5);">
+                <div style="text-align:center; margin-bottom:10px;">
+                    <h3 style="margin:0; color:#d63031; font-family:var(--font-head); letter-spacing:1px;">STRUK TAGIHAN</h3>
+                    <span id="inv-no" style="font-size:0.8rem; color:#555;">#INV</span>
+                </div>
+                <div style="border-top:1px dashed #333; border-bottom:1px dashed #333; padding:10px 0; margin-bottom:10px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;"><span>Pembeli:</span><span id="inv-user" style="font-weight:bold;">-</span></div>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:0.85rem;"><span>Item:</span><span id="inv-item" style="font-weight:bold;">-</span></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size:1.1rem; font-weight:bold;">
+                    <span>TOTAL:</span><span id="inv-total" style="color:#d63031;">0</span>
+                </div>
+            </div>
+
+            <div id="topup-manual">
+                <div class="payment-box">
+                    <label style="color:#aaa; font-size:0.8rem; margin-bottom:5px; display:block; font-weight:bold;">NOMINAL DEPOSIT</label>
+                    <div class="inp-curr">
+                        <span>Rp</span>
+                        <input type="number" id="topup-amount" placeholder="10000">
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-box">
+                <p style="color:#aaa; font-size:0.8rem; margin-bottom:12px; font-weight:bold;">METODE PEMBAYARAN</p>
+                
+                <div class="method">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/7/72/Logo_dana_blue.svg" height="15" style="background:#fff; padding:2px; border-radius:3px;"> 
+                        <span id="dana" style="font-weight:bold; letter-spacing:1px; color:#fff;">0838-9802-3362</span>
+                    </div>
+                    <button onclick="copyData('dana')" style="background:none; border:none; color:var(--acc); font-size:1.2rem;"><i class="fas fa-copy"></i></button>
+                </div>
+
+                <div class="method">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <div style="background:#fff; color:#ff7f50; font-weight:900; font-size:0.7rem; padding:2px 4px; border-radius:3px; font-style:italic;">SeaBank</div>
+                        <span id="seabank" style="font-weight:bold; letter-spacing:1px; color:#fff;">9012-3456-7890</span> 
+                    </div>
+                    <button onclick="copyData('seabank')" style="background:none; border:none; color:var(--acc); font-size:1.2rem;"><i class="fas fa-copy"></i></button>
+                </div>
+
+                <div class="method" style="flex-direction: column; align-items: center; gap: 10px; padding: 15px 10px;">
+                    <div style="display:flex; align-items:center; gap:10px; width: 100%; justify-content:center;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg" height="20" style="background:#fff; padding:2px; border-radius:3px;">
+                        <span style="font-weight:bold; font-size:0.9rem; color:#fff;">SCAN BARCODE QRIS</span>
+                    </div>
+                    <div style="width: 100%; text-align: center; background: #fff; padding: 10px; border-radius: 8px; margin-top:5px;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" width="150" height="150">
+                    </div>
+                </div>
+                
+                <div style="margin-top:20px;">
+                    <button id="btn-konfirmasi" onclick="processTransaction()" class="cyber-btn full-width" style="background:#25D366; border-color:#25D366;"><i class="fab fa-whatsapp"></i> KONFIRMASI BAYAR</button>
+                    <button id="btn-loading" class="cyber-btn full-width" style="display:none; opacity:0.7;"><i class="fas fa-spinner fa-spin"></i> MENCARI MUTASI... (<span id="timer">15</span>s)</button>
+                    <button id="btn-akses" onclick="openProductLink()" class="cyber-btn full-width glow" style="display:none; margin-top:10px;">BUKA PRODUK</button>
+                </div>
+            </div>
+        </section>
+
+
+        <section id="profile" class="page">
+            <h2 style="text-align:center; font-family:var(--font-head); margin-bottom:20px; color:var(--acc);">DASHBOARD</h2>
+            
+            <div class="profile-nexus">
+                <div class="prof-header">
+                    <div class="prof-avatar-box" onclick="triggerUpload()"><img id="prof-img" src=""><div class="prof-edit-badge">UBAH</div></div>
+                    <input type="file" id="file-input" accept="image/*" style="display:none;" onchange="handleAvatarUpload(this)">
+                    <div class="prof-info">
+                        <h3 id="prof-name">GUEST</h3>
+                        <div class="rank-badge" id="prof-rank"><i class="fas fa-star"></i> NEW AGENT</div>
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <div style="flex:1; background:rgba(0,0,0,0.5); padding:10px; border-radius:8px; text-align:center; border-bottom:2px solid #d63031;">
+                        <span style="font-size:0.6rem; color:#aaa;">TOTAL SALDO</span><h4 id="prof-saldo" style="margin-top:5px;">IDR 0</h4>
+                    </div>
+                    <div style="flex:1; background:rgba(0,0,0,0.5); padding:10px; border-radius:8px; text-align:center; border-bottom:2px solid #f1c40f;">
+                        <span style="font-size:0.6rem; color:#aaa;">SISA TOKEN</span><h4 id="prof-token" style="margin-top:5px; color:#f1c40f;">0</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mission-box">
+                <h4><i class="fas fa-crosshairs"></i> MISSION CENTER</h4>
+                <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+                    <button class="cyber-btn full-width glow" style="background: linear-gradient(135deg, #0984e3, #00cec9); border-color: #00cec9; font-size:0.75rem;" onclick="showPage('topup')"><i class="fas fa-wallet"></i> DEPOSIT SALDO</button>
+                    
+                                        <div style="display:flex; gap:10px;">
+                        <button id="btn-auth-action" class="cyber-btn full-width" style="background:#2d3436; border:none; font-size:0.7rem;" onclick="logout()">LOGOUT</button>
+                        
+                        <button class="cyber-btn full-width glow" style="font-size:0.7rem;" onclick="executeShareTask()">SHARE (+50 TKN)</button>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <h3 style="border-left:3px solid var(--acc); padding-left:10px; margin:25px 0 15px; font-family:var(--font-head); font-size:1rem;">TRANSACTION HISTORY</h3>
+            <div id="hist-list"></div>
+
+            <div style="text-align:center; margin-top:40px; color:#555; font-size:0.65rem; letter-spacing: 1px; font-family:var(--font-head);">
+                &copy; 2026<br>SANG DERMAWAN
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
